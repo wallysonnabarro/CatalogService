@@ -1,5 +1,6 @@
 ﻿using CatalogService.Data;
 using CatalogService.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -7,6 +8,7 @@ namespace CatalogService.Controllers
 {
     [Route("api/produtos")]
     [ApiController]
+    [Authorize]
     public class ProdutosController(IProdutosRepository _produtoRepository) : ControllerBase
     {
         [HttpGet("por-id/{id}")]
