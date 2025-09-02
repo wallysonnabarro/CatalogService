@@ -4,6 +4,6 @@ namespace OrderService.Servico
 {
     public interface IOrdemServicoServices
     {
-        Task<List<Guid>> ValidarListaProdutos(List<Guid> lista);
+        Task<List<ProdutosListaModels>> ValidarListaProdutos(List<Guid> lista);
     }
 }

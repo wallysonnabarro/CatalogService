@@ -15,7 +15,7 @@ namespace CatalogService.Data
         /// <returns></returns>
         Task<Result<ICollection<ProdutoAtualizarQuantidade>>> AtualizarQuantidadeProdutos(ICollection<ProdutoAtualizarQuantidade> lista);
         Task<Result<Paginacao<Produto>>> ProdutosPaginado(PageWrapper wrapper);
-        Task<Result<ICollection<Guid>>> ValidarListaProdutosAsync(ICollection<Guid> lista);
+        Task<Result<ICollection<ProdutosListaModels>>> ValidarListaProdutosAsync(ICollection<Guid> lista);
         Task<Result<Guid>> AdicionarProduto(ProdutoModel model);
     }
 }

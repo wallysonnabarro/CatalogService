@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿using OrderService.Models;
+using System.Text;
 using System.Text.Json;
 
 namespace OrderService.Servico
 {
     public class OrdemServicoServices(IConfiguration _configuration) : IOrdemServicoServices
     {
-        public async Task<List<Guid>> ValidarListaProdutos(List<Guid> lista)
+        public async Task<List<ProdutosListaModels>> ValidarListaProdutos(List<Guid> lista)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -14,14 +15,15 @@ namespace OrderService.Servico
                 // Converta o objeto para uma string JSON
                 var jsonConvenio = JsonSerializer.Serialize(lista);
 
-                var responseMessage = await client.PatchAsync(_configuration["apis:catalogo"] + "/api/produtos/validar-lista-produtos",
+                var url = _configuration["apis:catalogo"] + "/api/produtos/validar-lista-produtos";
+
+                var responseMessage = await client.PostAsync(url,
                                           new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
 
                 using var contentStream = await responseMessage.Content.ReadAsStreamAsync();
+                var retorno = await JsonSerializer.DeserializeAsync<List<ProdutosListaModels>>(contentStream);
 
-                var retorno = await JsonSerializer.DeserializeAsync<List<Guid>>(contentStream);
-
-                return retorno ?? new List<Guid>();
+                return retorno ?? new List<ProdutosListaModels>();
             }
         }
     }

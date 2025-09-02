@@ -14,13 +14,19 @@ namespace OrderService.Aplicacao
                 //Validar a lista de produtos na api CatalogService
                 var listaProdutosValidos = await _ordemServicoServices.ValidarListaProdutos(input.Select(p => p.ProdutoId).ToList());
 
-                if (listaProdutosValidos == null) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
+                if (listaProdutosValidos.Count == 0) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
 
-                var novaLista = input.Where(x => listaProdutosValidos.Contains(x.ProdutoId))
-                    .OrderBy(x => x.ProdutoId)
-                    .ToList();
+                var novaLista = input.Where(x => listaProdutosValidos.Any(p => p.Id == x.ProdutoId))
+                .Select(x => new Produtos
+                {
+                    ProdutoId = x.ProdutoId,
+                    Quantidade = x.Quantidade,
+                    Valor = listaProdutosValidos.First(p => p.Id == x.ProdutoId).Valor
+                })
+                .OrderBy(x => x.ProdutoId)
+                .ToList();
 
-                if (novaLista == null) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
+                if (novaLista.Count == 0) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
 
                 //gerar a ordem de servico
                 var novaOrdem = new OrdermServico

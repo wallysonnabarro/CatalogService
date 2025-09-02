@@ -10,5 +10,6 @@ namespace OrderService.Data
         }
 
         public DbSet<OrdermServico> OrdermServicos { get; set; }
+        public DbSet<Produtos> ProdutosVendidos { get; set; }
     }
 }

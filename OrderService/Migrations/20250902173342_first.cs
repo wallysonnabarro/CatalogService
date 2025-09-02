@@ -26,7 +26,7 @@ namespace OrderService.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Produto",
+                name: "ProdutosVendidos",
                 columns: table => new
                 {
                     ProdutoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -36,17 +36,17 @@ namespace OrderService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Produto", x => x.ProdutoId);
+                    table.PrimaryKey("PK_ProdutosVendidos", x => x.ProdutoId);
                     table.ForeignKey(
-                        name: "FK_Produto_OrdermServicos_OrdermServicoId",
+                        name: "FK_ProdutosVendidos_OrdermServicos_OrdermServicoId",
                         column: x => x.OrdermServicoId,
                         principalTable: "OrdermServicos",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Produto_OrdermServicoId",
-                table: "Produto",
+                name: "IX_ProdutosVendidos_OrdermServicoId",
+                table: "ProdutosVendidos",
                 column: "OrdermServicoId");
         }
 
@@ -54,7 +54,7 @@ namespace OrderService.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Produto");
+                name: "ProdutosVendidos");
 
             migrationBuilder.DropTable(
                 name: "OrdermServicos");

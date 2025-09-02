@@ -121,24 +121,26 @@ namespace CatalogService.Data
             }
         }
 
-        public async Task<Result<ICollection<Guid>>> ValidarListaProdutosAsync(ICollection<Guid> lista)
+        public async Task<Result<ICollection<ProdutosListaModels>>> ValidarListaProdutosAsync(ICollection<Guid> lista)
         {
             try
             {
+                List<ProdutosListaModels> nova = new List<ProdutosListaModels>();
+
                 foreach (var id in lista)
                 {
                     var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == id);
-                    if (produto == null || produto.Status != SituacaoEnum.Ativo.ToString())
+                    if (produto != null && produto.Status.Equals(SituacaoEnum.Ativo.ToString()))
                     {
-                        lista.Remove(id);
+                        nova.Add(new ProdutosListaModels { Id = produto.Id, Valor = produto.Valor});
                     }
                 }
 
-                return Result<ICollection<Guid>>.Sucesso(lista);
+                return Result<ICollection<ProdutosListaModels>>.Sucesso(nova);
             }
             catch (Exception e)
             {
-                return Result<ICollection<Guid>>.Failed(new Errors { Description = e.Message });
+                return Result<ICollection<ProdutosListaModels>>.Failed(new Errors { Description = e.Message });
             }
         }
     }
