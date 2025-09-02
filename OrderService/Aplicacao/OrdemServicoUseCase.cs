@@ -28,7 +28,6 @@ namespace OrderService.Aplicacao
 
                 if (novaLista.Count == 0) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
 
-                //gerar a ordem de servico
                 var novaOrdem = new OrdermServico
                 {
                     Id = Guid.NewGuid(),
@@ -40,7 +39,9 @@ namespace OrderService.Aplicacao
 
                 var id = await _OrdemRepository.GravarOrdemServiço(novaOrdem);
 
-                //retornar o guid da ordem de servico
+                // Atualizar a quantidade dos produtos na api CatalogService
+                await _ordemServicoServices.AtualizarQuantidadeProdutos(input);
+
                 return Result<Guid>.Sucesso(id);
             }
             catch (Exception e)

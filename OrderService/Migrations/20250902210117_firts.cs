@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrderService.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class firts : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,6 +29,7 @@ namespace OrderService.Migrations
                 name: "ProdutosVendidos",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ProdutoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Quantidade = table.Column<int>(type: "int", nullable: false),
                     Valor = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
@@ -36,7 +37,7 @@ namespace OrderService.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProdutosVendidos", x => x.ProdutoId);
+                    table.PrimaryKey("PK_ProdutosVendidos", x => x.Id);
                     table.ForeignKey(
                         name: "FK_ProdutosVendidos_OrdermServicos_OrdermServicoId",
                         column: x => x.OrdermServicoId,

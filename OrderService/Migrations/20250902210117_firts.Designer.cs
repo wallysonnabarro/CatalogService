@@ -12,8 +12,8 @@ using OrderService.Data;
 namespace OrderService.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20250902173342_first")]
-    partial class first
+    [Migration("20250902210117_firts")]
+    partial class firts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -48,11 +48,14 @@ namespace OrderService.Migrations
 
             modelBuilder.Entity("OrderService.Models.Produtos", b =>
                 {
-                    b.Property<Guid>("ProdutoId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OrdermServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProdutoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantidade")
@@ -61,7 +64,7 @@ namespace OrderService.Migrations
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ProdutoId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrdermServicoId");
 

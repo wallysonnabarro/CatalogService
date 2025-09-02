@@ -45,11 +45,14 @@ namespace OrderService.Migrations
 
             modelBuilder.Entity("OrderService.Models.Produtos", b =>
                 {
-                    b.Property<Guid>("ProdutoId")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OrdermServicoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ProdutoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantidade")
@@ -58,7 +61,7 @@ namespace OrderService.Migrations
                     b.Property<decimal>("Valor")
                         .HasColumnType("decimal(18,2)");
 
-                    b.HasKey("ProdutoId");
+                    b.HasKey("Id");
 
                     b.HasIndex("OrdermServicoId");
 

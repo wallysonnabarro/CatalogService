@@ -1,6 +1,7 @@
 ﻿using CatalogService.Data;
 using CatalogService.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace CatalogService.Controllers
 {
@@ -28,12 +29,16 @@ namespace CatalogService.Controllers
             if (lista == null || !lista.Any())
                 return BadRequest("A lista de produtos não pode ser nula ou vazia.");
 
-            var result = await _produtoRepository.AtualizarQuantidadeProdutos(lista);
+            try
+            {
+                await _produtoRepository.AtualizarQuantidadeProdutos(lista);
 
-            if (result.Succeeded)
-                return Ok(result.Dados);
-            else
-                return BadRequest(result.ToString());
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
         }
 
         /// <summary>
@@ -103,7 +108,7 @@ namespace CatalogService.Controllers
             if (!produto.Succeeded)
                 return BadRequest(produto.ToString());
 
-            return Ok(produto.Dados);
+            return Ok(JsonSerializer.Serialize(produto.Dados));
         }
     }
 }

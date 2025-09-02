@@ -37,32 +37,24 @@ namespace CatalogService.Data
             }
         }
 
-        public async Task<Result<ICollection<ProdutoAtualizarQuantidade>>> AtualizarQuantidadeProdutos(ICollection<ProdutoAtualizarQuantidade> lista)
+        public async Task AtualizarQuantidadeProdutos(ICollection<ProdutoAtualizarQuantidade> lista)
         {
             try
             {
-                List<ProdutoAtualizarQuantidade> produtosInvalidos = new List<ProdutoAtualizarQuantidade>();
-
                 foreach (var item in lista)
                 {
-                    var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == item.Id);
+                    var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == item.ProdutoId);
 
                     if (produto != null)
                     {
                         produto.QuantidadeEstoque -= item.Quantidade;
                         Update(produto);
                     }
-                    else
-                    {
-                        produtosInvalidos.Add(item);
-                    }
                 }
-
-                return Result<ICollection<ProdutoAtualizarQuantidade>>.Sucesso(produtosInvalidos);
             }
             catch (Exception e)
             {
-                return Result<ICollection<ProdutoAtualizarQuantidade>>.Failed(new Errors { Description = e.Message });
+                throw new Exception(e.Message);
             }
         }
 
