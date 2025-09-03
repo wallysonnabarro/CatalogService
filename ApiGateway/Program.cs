@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// -------------------------------
-// 1. Configuração JWT (centralizada)
-// -------------------------------
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -28,24 +26,41 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
-// -------------------------------
-// 2. Configuração do YARP
-// -------------------------------
 builder.Services.AddReverseProxy()
        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", opt =>
+    {
+        opt.Window = TimeSpan.FromSeconds(10); // janela de 10s
+        opt.PermitLimit = 5; // até 5 requisições
+        opt.QueueLimit = 2; // quantas ficam em fila
+        opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
+    });
+});
+
 var app = builder.Build();
 
-// -------------------------------
-// 3. Middleware
-// -------------------------------
 app.UseHttpsRedirection();
 
-// Autenticação e autorização
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Proxy
-app.MapReverseProxy();
+app.UseResponseCaching();
+
+app.MapReverseProxy(proxyPipeline =>
+{
+    proxyPipeline.Use((context, next) =>
+    {
+        context.Response.GetTypedHeaders().CacheControl =
+            new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
+            {
+                Public = true,
+                MaxAge = TimeSpan.FromSeconds(30) // 
+            };
+        return next();
+    });
+});
 
 app.Run();
