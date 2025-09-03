@@ -30,12 +30,12 @@ namespace OrderService.Servico
 
         public async Task<List<ProdutosListaModels>> ValidarListaProdutos(List<Guid> lista)
         {
-            var token = await GerarToken();
+            //var token = await GerarToken();
 
             using (HttpClient client = new HttpClient())
             {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
+                //client.DefaultRequestHeaders.Authorization =
+                //    new AuthenticationHeaderValue("Bearer", token);
 
                 var jsonConvenio = JsonSerializer.Serialize(lista);
                 var url = _configuration["apis:catalogo"] + "/api/produtos/validar-lista-produtos";
