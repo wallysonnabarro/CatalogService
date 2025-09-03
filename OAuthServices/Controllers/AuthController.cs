@@ -1,8 +1,8 @@
-﻿using CatalogService.Aplicacao;
-using CatalogService.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using OAuthServices.Aplicacao;
+using OAuthServices.Models;
 
-namespace CatalogService.Controllers
+namespace OAuthServices.Controllers
 {
     [Route("api/auth")]
     [ApiController]

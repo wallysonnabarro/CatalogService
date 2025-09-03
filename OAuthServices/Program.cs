@@ -1,12 +1,19 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using OAuthServices.Aplicacao;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// -------------------------------
-// 1. Configuração JWT (centralizada)
-// -------------------------------
+// Add services to the container.
+
+builder.Services.AddControllers();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
+
+// JWT - OAuth 2.0 configuration
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -26,26 +33,22 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
-
-// -------------------------------
-// 2. Configuração do YARP
-// -------------------------------
-builder.Services.AddReverseProxy()
-       .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
 var app = builder.Build();
 
-// -------------------------------
-// 3. Middleware
-// -------------------------------
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}
+
 app.UseHttpsRedirection();
 
-// Autenticação e autorização
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Proxy
-app.MapReverseProxy();
+app.MapControllers();
 
 app.Run();

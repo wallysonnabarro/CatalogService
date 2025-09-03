@@ -1,6 +1,4 @@
-﻿using CatalogService.Models;
-
-namespace CatalogService.Aplicacao
+﻿namespace OAuthServices.Aplicacao
 {
     public interface IJWTOAuth
     {

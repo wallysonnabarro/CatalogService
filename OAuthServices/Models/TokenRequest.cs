@@ -1,4 +1,4 @@
-﻿namespace CatalogService.Models
+﻿namespace OAuthServices.Models
 {
     public class TokenRequest
     {
