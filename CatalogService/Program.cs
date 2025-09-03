@@ -1,6 +1,5 @@
 using CatalogService.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -50,31 +49,6 @@ static void AddSwagger(WebApplicationBuilder builder)
             Version = "v1",
             Title = "Catálogo de Produtos",
             Description = "Microserviço de catálogo de produtos - WebApi"
-        });
-
-        s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-        {
-            Name = "Authorisation",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT authentication for minimal API"
-        });
-
-        s.AddSecurityRequirement(new OpenApiSecurityRequirement()
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[]{}
-            }
         });
 
         s.EnableAnnotations();

@@ -38,7 +38,7 @@ namespace OrderService.Servico
                 //    new AuthenticationHeaderValue("Bearer", token);
 
                 var jsonConvenio = JsonSerializer.Serialize(lista);
-                var url = _configuration["apis:catalogo"] + "/api/produtos/validar-lista-produtos";
+                var url = _configuration["apis:catalogo"] + "/catalog/produtos/validar-lista-produtos";
 
                 var responseMessage = await client.PostAsync(url,
                                           new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));

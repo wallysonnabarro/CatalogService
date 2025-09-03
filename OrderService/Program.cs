@@ -46,37 +46,14 @@ static void AddSwagger(WebApplicationBuilder builder)
 {
     builder.Services.AddSwaggerGen(s =>
     {
-        s.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+        s.SwaggerDoc("v1", new OpenApiInfo
         {
             Version = "v1",
             Title = "Ordem de Serviço",
             Description = "Microserviço de ordem de serviço - WebApi"
         });
 
-        s.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-        {
-            Name = "Authorisation",
-            Type = SecuritySchemeType.ApiKey,
-            Scheme = "Bearer",
-            BearerFormat = "JWT",
-            In = ParameterLocation.Header,
-            Description = "JWT authentication for minimal API"
-        });
-
-        s.AddSecurityRequirement(new OpenApiSecurityRequirement()
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
+        s.UseInlineDefinitionsForEnums();
 
         string xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
         string xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

@@ -4,7 +4,7 @@ using OrderService.Models;
 
 namespace OrderService.Controllers
 {
-    [Route("api/orderns")]
+    [Route("orders/orderns")]
     [ApiController]
     public class OrdemServicoController(IOrdemServicoUseCase _useCase) : ControllerBase
     {
