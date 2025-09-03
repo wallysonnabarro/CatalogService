@@ -20,6 +20,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddScoped<IOrdemServicoUseCase, OrdemServicoUseCase>();
 builder.Services.AddScoped<IOrdemServicoServices, OrdemServicoServices>();
 builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
 
 var app = builder.Build();
 

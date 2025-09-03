@@ -6,23 +6,26 @@ using System.Text.Json;
 
 namespace OrderService.Servico
 {
-    public class OrdemServicoServices(IConfiguration _configuration) : IOrdemServicoServices
+    public class OrdemServicoServices(IConfiguration _configuration, IRabbitMqClient _rabbitMqClient) : IOrdemServicoServices
     {
         public async Task AtualizarQuantidadeProdutos(List<Produto> lista)
         {
-            var token = await GerarToken();
+            await _rabbitMqClient.PublicarAtualizarQuantidadeProdutosAsync(lista);
 
-            using (HttpClient client = new HttpClient())
-            {
-                client.DefaultRequestHeaders.Authorization =
-                    new AuthenticationHeaderValue("Bearer", token);
 
-                var jsonConvenio = JsonSerializer.Serialize(lista);
-                var url = _configuration["apis:catalogo"] + "/api/produtos/atualizar-quantidade";
+            //var token = await GerarToken();
 
-                var responseMessage = await client.PostAsync(url,
-                                          new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
-            }
+            //using (HttpClient client = new HttpClient())
+            //{
+            //    client.DefaultRequestHeaders.Authorization =
+            //        new AuthenticationHeaderValue("Bearer", token);
+
+            //    var jsonConvenio = JsonSerializer.Serialize(lista);
+            //    var url = _configuration["apis:catalogo"] + "/api/produtos/atualizar-quantidade";
+
+            //    var responseMessage = await client.PostAsync(url,
+            //                              new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
+            //}
         }
 
         public async Task<List<ProdutosListaModels>> ValidarListaProdutos(List<Guid> lista)

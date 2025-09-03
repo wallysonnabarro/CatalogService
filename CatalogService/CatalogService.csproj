@@ -31,4 +31,8 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.4" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Servico\" />
+	</ItemGroup>
+
 </Project>
