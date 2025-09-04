@@ -1,0 +1,34 @@
+services:
+  apigateway:
+    image: ${DOCKER_REGISTRY-}apigateway
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+
+  catalogservice:
+    image: ${DOCKER_REGISTRY-}catalogservice
+    build:
+      context: .
+      dockerfile: CatalogService/Dockerfile
+
+
+  oauthservices:
+    image: ${DOCKER_REGISTRY-}oauthservices
+    build:
+      context: .
+      dockerfile: OAuthServices/Dockerfile
+
+
+  orderservice:
+    image: ${DOCKER_REGISTRY-}orderservice
+    build:
+      context: .
+      dockerfile: OrderService/Dockerfile
+
+
+  workercatalog:
+    image: ${DOCKER_REGISTRY-}workercatalog
+    build:
+      context: .
+      dockerfile: WorkerCatalog/Dockerfile
+

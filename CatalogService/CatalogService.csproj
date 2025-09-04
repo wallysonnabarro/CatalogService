@@ -7,6 +7,9 @@
 
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
+		<UserSecretsId>f623dfcb-0f08-4635-b6d5-016064055091</UserSecretsId>
+		<DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+		<DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,6 +25,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
 		<PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.4" />
 		<PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="9.0.4" />
