@@ -34,7 +34,7 @@ builder.Services.AddRateLimiter(options =>
     options.AddFixedWindowLimiter("fixed", opt =>
     {
         opt.Window = TimeSpan.FromSeconds(10); // janela de 10s
-        opt.PermitLimit = 5; // até 5 requisições
+        opt.PermitLimit = 5; // atï¿½ 5 requisiï¿½ï¿½es
         opt.QueueLimit = 2; // quantas ficam em fila
         opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
     });
