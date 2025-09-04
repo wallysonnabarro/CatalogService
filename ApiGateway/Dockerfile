@@ -3,12 +3,18 @@
 # Esta fase é usada durante a execução no VS no modo rápido (Padrão para a configuração de Depuração)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 
-# variável de ambiente para definir a URL do ASP.NET Core
-ENV ASPNETCORE_URLS=http://+:8080
-
 WORKDIR /app
 EXPOSE 8080
+EXPOSE 8081
 
+# habilitar HTTPS
+ENV ASPNETCORE_URLS="https://+:8081;http://+:8080"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Password="123456"
+ENV ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+
+# Copiar certificado para dentro do container
+# (ele deve existir na pasta ./certs no seu projeto)
+COPY ./certs/aspnetapp.pfx /https/
 
 # Esta fase é usada para compilar o projeto de serviço
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build

@@ -60,6 +60,7 @@ services:
         condition: service_started
     ports:
       - "5000:8080"
+      - "5001:8081"
     networks:
       - backend
       
@@ -75,7 +76,8 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__Default: "Server=sql2,1433;Database=CatalogDb;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
     ports:
-      - "5001:8080"
+      - "5002:8080"
+      - "5003:8081"
     networks:
       - backend
       
@@ -88,7 +90,8 @@ services:
       sql1:
         condition: service_started
     ports:
-      - "5002:8080"
+      - "5004:8080"
+      - "5005:8081"
     networks:
       - backend
       
@@ -110,7 +113,8 @@ services:
       RabbitMQ__User: "guest"
       RabbitMQ__Password: "guest"
     ports:
-      - "5003:8080"
+      - "5006:8080"
+      - "5007:8081"
     networks:
       - backend
       
