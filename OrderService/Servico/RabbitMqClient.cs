@@ -21,21 +21,28 @@ namespace OrderService.Servico
 
                 var factory = new ConnectionFactory
                 {
-                    HostName = _config["RabbitMqHost"]!,
-                    Port = 5672,
-                    UserName = _config["RabbitUsername"]!,
-                    Password = _config["RabbitPassword"]!
+                    HostName = _config["RabbitMQ:Host"]!,
+                    Port = Int32.Parse(_config["RabbitMQ:Port"]!),
+                    UserName = _config["RabbitMQ:User"]!,
+                    Password = _config["RabbitMQ:Password"]!
                 };
 
                 using var connection = await factory.CreateConnectionAsync();
                 using var channel = await connection.CreateChannelAsync();
 
+                var arguments = new Dictionary<string, object>
+                {             
+                    { "x-dead-letter-exchange", "dead_letters" }, 
+                    { "x-dead-letter-routing-key", "catalog.dlx" },
+                    { "x-max-length", 100 }                        
+                };
+
                 await channel.QueueDeclareAsync(
                     queue: "catalog",
-                    durable: false,
+                    durable: true,
                     exclusive: false,
                     autoDelete: false,
-                    arguments: null);
+                    arguments: arguments!);
 
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(lista));
 

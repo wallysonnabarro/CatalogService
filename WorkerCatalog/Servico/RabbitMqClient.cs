@@ -2,6 +2,7 @@
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
+using System.Threading.Channels;
 
 namespace WorkerCatalog.Servico
 {
@@ -31,22 +32,29 @@ namespace WorkerCatalog.Servico
             {
                 var factory = new ConnectionFactory
                 {
-                    HostName = _config["RabbitMqHost"]!,
-                    Port = 5672,
-                    UserName = _config["RabbitUsername"]!,
-                    Password = _config["RabbitPassword"]!
+                    HostName = _config["RabbitMQ:Host"]!,
+                    Port = Int32.Parse(_config["RabbitMQ:Port"]!),
+                    UserName = _config["RabbitMQ:User"]!,
+                    Password = _config["RabbitMQ:Password"]!
                 };
 
                 _connection = await factory.CreateConnectionAsync();
                 _channel = await _connection.CreateChannelAsync();
                 _isConnected = true;
 
+                var arguments = new Dictionary<string, object>
+                {
+                    { "x-dead-letter-exchange", "dead_letters" },
+                    { "x-dead-letter-routing-key", "catalog.dlx" },
+                    { "x-max-length", 100 }
+                };
+
                 await _channel.QueueDeclareAsync(
-                queue: "catalog",
-                durable: false,
-                exclusive: false,
-                autoDelete: false,
-                arguments: null);
+                    queue: "catalog",
+                    durable: true,
+                    exclusive: false,
+                    autoDelete: false,
+                    arguments: arguments!);
 
                 await _channel.BasicQosAsync(0, 1, false);
 

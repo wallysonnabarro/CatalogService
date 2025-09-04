@@ -1,34 +1,135 @@
+version: "3.9"
+
+networks:
+  backend:
+
+volumes:
+  sql1_data:
+  sql2_data:
+  rabbitmq_data:
+
 services:
+  sql1:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql1
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_password123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "14333:1433"
+    volumes:
+      - sql1_data:/var/opt/mssql
+    networks:
+      - backend
+      
+  sql2:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql2
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_password123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "14334:1433"
+    volumes:
+      - sql2_data:/var/opt/mssql
+    networks:
+      - backend
+      
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"   
+      - "15672:15672" 
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - backend
+      
   apigateway:
-    image: ${DOCKER_REGISTRY-}apigateway
     build:
       context: .
       dockerfile: ApiGateway/Dockerfile
-
+    container_name: apigateway
+    depends_on:
+      catalogservice:
+        condition: service_started
+      orderservice:
+        condition: service_started
+    ports:
+      - "5000:8080"
+    networks:
+      - backend
+      
   catalogservice:
-    image: ${DOCKER_REGISTRY-}catalogservice
     build:
       context: .
       dockerfile: CatalogService/Dockerfile
-
-
+    container_name: catalogservice
+    depends_on:
+      sql2:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=sql2,1433;Database=CatalogDb;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+    ports:
+      - "5001:8080"
+    networks:
+      - backend
+      
   oauthservices:
-    image: ${DOCKER_REGISTRY-}oauthservices
     build:
       context: .
       dockerfile: OAuthServices/Dockerfile
-
-
+    container_name: oauthservices
+    depends_on:
+      sql1:
+        condition: service_started
+    ports:
+      - "5002:8080"
+    networks:
+      - backend
+      
   orderservice:
-    image: ${DOCKER_REGISTRY-}orderservice
     build:
       context: .
       dockerfile: OrderService/Dockerfile
-
-
+    container_name: orderservice
+    depends_on:
+      sql2:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=sql2,1433;Database=OrderDb;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Port: "5672"
+      RabbitMQ__User: "guest"
+      RabbitMQ__Password: "guest"
+    ports:
+      - "5003:8080"
+    networks:
+      - backend
+      
   workercatalog:
-    image: ${DOCKER_REGISTRY-}workercatalog
     build:
       context: .
       dockerfile: WorkerCatalog/Dockerfile
-
+    container_name: workercatalog
+    depends_on:
+      sql2:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=sql2,1433;Database=CatalogDb;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Port: "5672"
+      RabbitMQ__User: "guest"
+      RabbitMQ__Password: "guest"
+    networks:
+      - backend

@@ -2,10 +2,12 @@
 
 # Esta fase é usada durante a execução no VS no modo rápido (Padrão para a configuração de Depuração)
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
-USER $APP_UID
+
+# variável de ambiente para definir a URL do ASP.NET Core
+ENV ASPNETCORE_URLS=http://+:8080
+
 WORKDIR /app
 EXPOSE 8080
-EXPOSE 8081
 
 
 # Esta fase é usada para compilar o projeto de serviço
