@@ -22,7 +22,7 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "./WorkerCatalog.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 # Esta fase é usada na produção ou quando executada no VS no modo normal (padrão quando não está usando a configuração de Depuração)
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "WorkerCatalog.dll"]

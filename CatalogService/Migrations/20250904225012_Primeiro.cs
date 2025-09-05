@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CatalogService.Migrations
 {
     /// <inheritdoc />
-    public partial class first : Migration
+    public partial class Primeiro : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

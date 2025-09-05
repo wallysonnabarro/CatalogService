@@ -107,7 +107,7 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__Default: "Server=sql2,1433;Database=db-ms-pedidos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      ConnectionStrings__Default: "Server=sql1,1433;Database=db-ms-pedidos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       RabbitMQ__Host: "rabbitmq"
       RabbitMQ__Port: "5672"
       RabbitMQ__User: "guest"

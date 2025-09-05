@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogService.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20250902160238_first")]
-    partial class first
+    [Migration("20250904225012_Primeiro")]
+    partial class Primeiro
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
