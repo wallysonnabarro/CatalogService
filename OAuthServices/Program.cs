@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OAuthServices.Aplicacao;
+using OAuthServices.Data;
 using OAuthServices.Middleware;
 using OAuthServices.Services;
 using System.Reflection;
@@ -18,8 +20,17 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
 
+// Configuração do banco de dados para logs
+builder.Services.AddDbContext<LogContextDb>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
+
+// Configuração de logging com persistência no banco de dados
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();

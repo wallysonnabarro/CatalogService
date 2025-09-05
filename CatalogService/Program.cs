@@ -27,6 +27,11 @@ builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
 
+// Configuração de logging com persistência no banco de dados
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
+
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
 

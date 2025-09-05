@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ApiGateway.Data;
 using ApiGateway.Middleware;
 using ApiGateway.Services;
 
@@ -28,8 +30,17 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Configuração do banco de dados para logs
+builder.Services.AddDbContext<LogContextDb>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LogConnection")), ServiceLifetime.Scoped);
+
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
+
+// Configuração de logging com persistência no banco de dados
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();

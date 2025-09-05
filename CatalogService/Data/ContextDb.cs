@@ -10,5 +10,6 @@ namespace CatalogService.Data
         }
 
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<ApplicationLog> ApplicationLogs { get; set; }
     }
 }
