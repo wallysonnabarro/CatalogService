@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OAuthServices.Aplicacao;
+using OAuthServices.Middleware;
+using OAuthServices.Services;
 using System.Reflection;
 using System.Text;
 
@@ -15,6 +17,12 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
+
+// Adiciona HttpContextAccessor para acessar o contexto HTTP
+builder.Services.AddHttpContextAccessor();
+
+// Registra o serviÃ§o de logging com Correlation ID
+builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
 
 // JWT - OAuth 2.0 configuration
 builder.Services.AddAuthentication(options =>
@@ -47,11 +55,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI(s =>
     {
-        s.SwaggerEndpoint("/swagger/v1/swagger.json", "Microserviço de autenticação e autorização v1.0");
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "Microserviï¿½o de autenticaï¿½ï¿½o e autorizaï¿½ï¿½o v1.0");
     });
 }
 
 app.UseHttpsRedirection();
+
+// Adiciona o middleware de Correlation ID no inÃ­cio do pipeline
+app.UseCorrelationId();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -68,7 +79,7 @@ static void AddSwagger(WebApplicationBuilder builder)
         {
             Version = "v1",
             Title = "OAuth",
-            Description = "Microserviço de autenticação e autorização - WebApi"
+            Description = "Microserviï¿½o de autenticaï¿½ï¿½o e autorizaï¿½ï¿½o - WebApi"
         });
 
         s.UseInlineDefinitionsForEnums();

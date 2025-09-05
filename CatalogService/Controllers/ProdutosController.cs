@@ -1,5 +1,6 @@
 ﻿using CatalogService.Data;
 using CatalogService.Models;
+using CatalogService.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -7,19 +8,31 @@ namespace CatalogService.Controllers
 {
     [Route("catalog/produtos")]
     [ApiController]
-    public class ProdutosController(IProdutosRepository _produtoRepository) : ControllerBase
+    public class ProdutosController(IProdutosRepository _produtoRepository, ICorrelationLogger _logger) : ControllerBase
     {
         [HttpGet("por-id/{id}")]
         public async Task<IActionResult> GetProdutosAsync(string id)
         {
-            if (String.IsNullOrEmpty(id)) return BadRequest("Id inválido");
+            _logger.LogInformation("Buscando produto por ID: {ProdutoId}", id);
+
+            if (String.IsNullOrEmpty(id))
+            {
+                _logger.LogWarning("Tentativa de busca com ID inválido");
+                return BadRequest("Id inválido");
+            }
 
             var produtos = await _produtoRepository.ProdutoPorId(Guid.Parse(id));
 
             if (produtos.Succeeded)
+            {
+                _logger.LogInformation("Produto encontrado com sucesso para ID: {ProdutoId}", id);
                 return Ok(produtos.Dados);
+            }
             else
+            {
+                _logger.LogWarning("Produto não encontrado para ID: {ProdutoId}. Erro: {Erro}", id, produtos.ToString());
                 return BadRequest(produtos.ToString());
+            }
         }
 
         [HttpPost]

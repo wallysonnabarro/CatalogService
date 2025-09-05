@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using OrderService.Aplicacao;
 using OrderService.Data;
+using OrderService.Middleware;
+using OrderService.Services;
 using OrderService.Servico;
 using System.Reflection;
 
@@ -22,6 +24,12 @@ builder.Services.AddScoped<IOrdemServicoServices, OrdemServicoServices>();
 builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
 builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
 
+// Adiciona HttpContextAccessor para acessar o contexto HTTP
+builder.Services.AddHttpContextAccessor();
+
+// Registra o serviÃ§o de logging com Correlation ID
+builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,11 +38,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI(s =>
     {
-        s.SwaggerEndpoint("/swagger/v1/swagger.json", "API Ordem de Serviços v1.0");
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "API Ordem de Serviï¿½os v1.0");
     });
 }
 
 app.UseHttpsRedirection();
+
+// Adiciona o middleware de Correlation ID no inÃ­cio do pipeline
+app.UseCorrelationId();
 
 app.UseAuthorization();
 
@@ -49,8 +60,8 @@ static void AddSwagger(WebApplicationBuilder builder)
         s.SwaggerDoc("v1", new OpenApiInfo
         {
             Version = "v1",
-            Title = "Ordem de Serviço",
-            Description = "Microserviço de ordem de serviço - WebApi"
+            Title = "Ordem de Serviï¿½o",
+            Description = "Microserviï¿½o de ordem de serviï¿½o - WebApi"
         });
 
         s.UseInlineDefinitionsForEnums();

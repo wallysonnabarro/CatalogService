@@ -1,4 +1,6 @@
 using CatalogService.Data;
+using CatalogService.Middleware;
+using CatalogService.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using System.Text.Json.Serialization;
@@ -22,6 +24,12 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 
 builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
 
+// Adiciona HttpContextAccessor para acessar o contexto HTTP
+builder.Services.AddHttpContextAccessor();
+
+// Registra o serviÃ§o de logging com Correlation ID
+builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,11 +38,14 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwagger();
     app.UseSwaggerUI(s =>
     {
-        s.SwaggerEndpoint("/swagger/v1/swagger.json", "API Catálogo de Produtos v1.0");
+        s.SwaggerEndpoint("/swagger/v1/swagger.json", "API Catï¿½logo de Produtos v1.0");
     });
 }
 
 app.UseHttpsRedirection();
+
+// Adiciona o middleware de Correlation ID no inÃ­cio do pipeline
+app.UseCorrelationId();
 
 app.MapControllers();
 
@@ -47,8 +58,8 @@ static void AddSwagger(WebApplicationBuilder builder)
         s.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
         {
             Version = "v1",
-            Title = "Catálogo de Produtos",
-            Description = "Microserviço de catálogo de produtos - WebApi"
+            Title = "Catï¿½logo de Produtos",
+            Description = "Microserviï¿½o de catï¿½logo de produtos - WebApi"
         });
 
         s.EnableAnnotations();

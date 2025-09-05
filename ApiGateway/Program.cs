@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using ApiGateway.Middleware;
+using ApiGateway.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +28,12 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+// Adiciona HttpContextAccessor para acessar o contexto HTTP
+builder.Services.AddHttpContextAccessor();
+
+// Registra o serviço de logging com Correlation ID
+builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+
 builder.Services.AddReverseProxy()
        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
@@ -44,6 +52,9 @@ var app = builder.Build();
 
 app.UseHttpsRedirection();
 
+// Adiciona o middleware de Correlation ID no início do pipeline
+app.UseCorrelationId();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -53,6 +64,13 @@ app.MapReverseProxy(proxyPipeline =>
 {
     proxyPipeline.Use((context, next) =>
     {
+        // Propaga o Correlation ID para os serviços downstream
+        var correlationId = context.Items["CorrelationId"]?.ToString();
+        if (!string.IsNullOrEmpty(correlationId))
+        {
+            context.Request.Headers["X-Correlation-ID"] = correlationId;
+        }
+
         context.Response.GetTypedHeaders().CacheControl =
             new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
             {

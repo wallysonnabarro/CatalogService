@@ -262,3 +262,4 @@ docker-compose up [nome-do-servico]
 **Data de Criação**: Setembro 2024  
 **Versão**: 1.0  
 **Autor**: Configuração Docker para Microservices .NET Core
+
