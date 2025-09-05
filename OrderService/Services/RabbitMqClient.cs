@@ -40,6 +40,13 @@ namespace OrderService.Services
                     { "x-max-length", 100 }                        
                 };
 
+                // Declarar exchange nomeado primeiro
+                await channel.ExchangeDeclareAsync(
+                    exchange: "catalog_exchange",
+                    type: ExchangeType.Direct,
+                    durable: true,
+                    autoDelete: false);
+
                 await channel.QueueDeclareAsync(
                     queue: "catalog",
                     durable: true,
@@ -47,10 +54,16 @@ namespace OrderService.Services
                     autoDelete: false,
                     arguments: arguments!);
 
+                // Fazer bind da queue ao exchange nomeado
+                await channel.QueueBindAsync(
+                    queue: "catalog",
+                    exchange: "catalog_exchange",
+                    routingKey: "catalog");
+
                 var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(lista));
 
                 await channel.BasicPublishAsync(
-                    exchange: string.Empty,
+                    exchange: "catalog_exchange", // Usar exchange nomeado
                     routingKey: "catalog",
                     body: body);
             }

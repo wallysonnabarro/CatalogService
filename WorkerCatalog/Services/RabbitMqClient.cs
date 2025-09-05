@@ -55,12 +55,25 @@ namespace WorkerCatalog.Services
                     { "x-max-length", 100 }
                 };
 
+                // Declarar exchange nomeado primeiro
+                await _channel.ExchangeDeclareAsync(
+                    exchange: "catalog_exchange",
+                    type: ExchangeType.Direct,
+                    durable: true,
+                    autoDelete: false);
+
                 await _channel.QueueDeclareAsync(
                     queue: "catalog",
                     durable: true,
                     exclusive: false,
                     autoDelete: false,
                     arguments: arguments!);
+
+                // Fazer bind da queue ao exchange nomeado
+                await _channel.QueueBindAsync(
+                    queue: "catalog",
+                    exchange: "catalog_exchange",
+                    routingKey: "catalog");
 
                 await _channel.BasicQosAsync(0, 1, false);
 
