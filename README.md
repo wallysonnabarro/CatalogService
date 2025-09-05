@@ -295,4 +295,4 @@ A arquitetura implementada fornece uma base sólida para sistemas de e-commerce 
 
 ---
 
-**Desenvolvido com ❤️ usando .NET 9.0 e Docker**
+**Desenvolvedor:** Wallyson Lopes - Sênior
