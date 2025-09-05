@@ -138,6 +138,47 @@ O sistema simula um e-commerce onde:
 - **sql4** (14336): `db-ms-autenticacao` - Dados de usuários
 - **sql5** (14337): `db-ms-worker` - Logs do Worker
 
+### **Gerenciamento de Migrações**
+- **CatalogService** → `ContextDb` (sql2) ✅
+- **OrderService** → `ContextDb` (sql1) ✅
+- **ApiGateway** → `LogContextDb` (sql3) ✅
+- **OAuthServices** → `LogContextDb` (sql4) ❌ (sem migrações)
+- **WorkerCatalog** → `LogContextDb` (sql5) ❌ (sem migrações)
+
+#### **Comandos de Migração**
+
+⚠️ **IMPORTANTE:** Execute as migrações na ordem correta para evitar erros:
+
+```bash
+# 1. PRIMEIRO: ApiGateway (LogContextDb)
+docker exec -it apigateway bash
+cd /src/ApiGateway
+dotnet ef migrations list --context LogContextDb
+dotnet ef database update --context LogContextDb
+
+# 2. SEGUNDO: CatalogService (ContextDb)
+docker exec -it catalogservice bash
+cd /src/CatalogService
+dotnet ef migrations list --context ContextDb
+dotnet ef database update --context ContextDb
+
+# 3. TERCEIRO: OrderService (ContextDb)
+docker exec -it orderservice bash
+cd /src/OrderService
+dotnet ef migrations list --context ContextDb
+dotnet ef database update --context ContextDb
+```
+
+**Ordem de Execução:**
+1. **LogContextDb** (ApiGateway) - Primeiro
+2. **ContextDb** (CatalogService) - Segundo  
+3. **ContextDb** (OrderService) - Terceiro
+
+⚠️ **Após executar as migrações, reinicie o WorkerCatalog:**
+```bash
+docker restart workercatalog
+```
+
 ### **Message Broker**
 - **RabbitMQ** (5672/15672): Comunicação assíncrona entre serviços
 - **Exchange:** `catalog_exchange` (Direct)

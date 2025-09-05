@@ -20,7 +20,7 @@ builder.Services.AddOpenApi();
 
 // Configuração do banco de dados para logs
 builder.Services.AddDbContext<LogContextDb>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+    options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
 builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
 

@@ -18,6 +18,10 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<ContextDb>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
+// Configuração do banco de dados para logs
+builder.Services.AddDbContext<LogContextDb>(options =>
+    options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
+
 builder.Services.AddScoped<IOrdemServicoUseCase, OrdemServicoUseCase>();
 builder.Services.AddScoped<IOrdemServicoServices, OrdemServicoServices>();
 builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();

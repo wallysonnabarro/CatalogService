@@ -53,7 +53,7 @@ namespace CatalogService.Services
             try
             {
                 using var scope = _serviceProvider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ContextDb>();
+                var context = scope.ServiceProvider.GetRequiredService<LogContextDb>();
                 
                 var log = new ApplicationLog
                 {

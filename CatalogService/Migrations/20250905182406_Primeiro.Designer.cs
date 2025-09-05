@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CatalogService.Migrations
 {
     [DbContext(typeof(ContextDb))]
-    [Migration("20250904225012_Primeiro")]
+    [Migration("20250905182406_Primeiro")]
     partial class Primeiro
     {
         /// <inheritdoc />

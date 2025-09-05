@@ -2,7 +2,6 @@ using CatalogService.Data;
 using CatalogService.Middleware;
 using CatalogService.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -22,6 +21,10 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDbContext<ContextDb>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+
+// Configuração do banco de dados para logs
+builder.Services.AddDbContext<LogContextDb>(options =>
+    options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
 builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
 

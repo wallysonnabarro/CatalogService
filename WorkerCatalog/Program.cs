@@ -12,7 +12,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 
 // Configuração do banco de dados para logs
 builder.Services.AddDbContext<LogContextDb>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LogConnection")), ServiceLifetime.Scoped);
+    options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
 // Configuração de logging com persistência no banco de dados
 builder.Logging.ClearProviders();

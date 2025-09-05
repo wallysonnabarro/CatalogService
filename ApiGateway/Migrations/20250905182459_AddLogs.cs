@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace OAuthServices.Migrations
+namespace ApiGateway.Migrations
 {
     /// <inheritdoc />
-    public partial class LoggerCorrelationId : Migration
+    public partial class AddLogs : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

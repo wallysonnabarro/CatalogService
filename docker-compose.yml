@@ -109,7 +109,6 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__LogConnection: "Server=sql3,1433;Database=db-ms-gateway;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       <<: *common-variables
     ports:
       - "5000:8080"
@@ -127,7 +126,6 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=sql2,1433;Database=db-ms-produtos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       <<: *common-variables
     networks:
       - backend
@@ -142,7 +140,6 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=sql4,1433;Database=db-ms-autenticacao;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       <<: *common-variables
     ports:
       - "5004:8080"
@@ -162,7 +159,6 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=sql1,1433;Database=db-ms-pedidos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       RabbitMQ__Host: "rabbitmq"
       RabbitMQ__Port: "5672"
       RabbitMQ__User: "guest"
@@ -185,8 +181,6 @@ services:
         condition: service_started
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
-      ConnectionStrings__DefaultConnection: "Server=sql2,1433;Database=db-ms-produtos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
-      ConnectionStrings__LogConnection: "Server=sql5,1433;Database=db-ms-worker;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
       RabbitMQ__Host: "rabbitmq"
       RabbitMQ__Port: "5672"
       RabbitMQ__User: "guest"
