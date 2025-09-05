@@ -191,7 +191,7 @@ graph TD
     C -->|Evento| E[RabbitMQ]
     E -->|Consumo| F[WorkerCatalog]
     F -->|Atualização| D
-    B -->|Autenticação| G[OAuthServices]
+    A -->|Autenticação| G[OAuthServices]
     
     style A fill:#e1f5fe
     style B fill:#f3e5f5
