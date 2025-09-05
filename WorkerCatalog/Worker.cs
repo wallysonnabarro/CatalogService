@@ -15,14 +15,20 @@ namespace WorkerCatalog
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            _logger.LogInformation("Worker iniciado - {Timestamp}", DateTime.UtcNow);
+            
             try
             {
+                _logger.LogInformation("Conectando ao RabbitMQ...");
+                
                 // Conectar uma vez e manter conectado
                 await _rabbitMqClient.ExecuteAsync(stoppingToken);
+                
+                _logger.LogInformation("Worker finalizado normalmente");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro no Worker");
+                _logger.LogError(ex, "Erro crítico no Worker - {Timestamp}", DateTime.UtcNow);
                 throw;
             }
         }

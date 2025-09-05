@@ -8,27 +8,44 @@ namespace WorkerCatalog.Services
     public class ProcessarEvento : IProcessarEvento
     {
         private readonly IServiceScopeFactory _scopeFactory;
+        private readonly ILogger<ProcessarEvento> _logger;
 
-        public ProcessarEvento(IServiceScopeFactory scopeFactory)
+        public ProcessarEvento(IServiceScopeFactory scopeFactory, ILogger<ProcessarEvento> logger)
         {
             _scopeFactory = scopeFactory;
+            _logger = logger;
         }
 
         public void ProcessarMensagemEvento(string m)
         {
-            using var scope = _scopeFactory.CreateScope();
-
-            var _produtoRepository = scope.ServiceProvider.GetRequiredService<IProdutosRepository>();
-
-            var message = JsonSerializer.Deserialize<List<ProdutoAtualizarQuantidade>>(m);
-
-            if (message != null && message.Any())
+            _logger.LogInformation("Iniciando processamento de mensagem do RabbitMQ");
+            
+            try
             {
-                _produtoRepository.AtualizarQuantidadeProdutos(message).GetAwaiter().GetResult();
+                using var scope = _scopeFactory.CreateScope();
+
+                var _produtoRepository = scope.ServiceProvider.GetRequiredService<IProdutosRepository>();
+
+                var message = JsonSerializer.Deserialize<List<ProdutoAtualizarQuantidade>>(m);
+
+                if (message != null && message.Any())
+                {
+                    _logger.LogInformation("Processando atualização de {Quantidade} produtos", message.Count);
+                    
+                    _produtoRepository.AtualizarQuantidadeProdutos(message).GetAwaiter().GetResult();
+                    
+                    _logger.LogInformation("Atualização de produtos concluída com sucesso");
+                }
+                else
+                {
+                    _logger.LogWarning("Mensagem inválida recebida: {Mensagem}", m);
+                    throw new Exception("Mensagem inválida");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception("Mensagem inválida");
+                _logger.LogError(ex, "Erro ao processar mensagem do RabbitMQ: {Mensagem}", m);
+                throw;
             }
         }
     }

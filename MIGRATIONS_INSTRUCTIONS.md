@@ -30,6 +30,20 @@ dotnet ef migrations add AddApplicationLogs
 dotnet ef database update
 ```
 
+### 5. WorkerCatalog
+```bash
+cd WorkerCatalog
+dotnet ef migrations add AddApplicationLogs
+
+or
+
+add-migration AddApplicationLogs -context LogContextDb
+
+porfim
+
+dotnet ef database update
+```
+
 ## Estrutura da Tabela ApplicationLogs
 
 A tabela será criada com os seguintes campos:
@@ -67,6 +81,9 @@ SELECT * FROM ApplicationLogs WHERE ServiceName = 'OAuthServices';
 
 -- Para ApiGateway
 SELECT * FROM ApplicationLogs WHERE ServiceName = 'ApiGateway';
+
+-- Para WorkerCatalog
+SELECT * FROM ApplicationLogs WHERE ServiceName = 'WorkerCatalog';
 ```
 
 ## Teste dos Logs
