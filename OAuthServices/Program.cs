@@ -18,19 +18,19 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
-
 // Configuração do banco de dados para logs
 builder.Services.AddDbContext<LogContextDb>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+
+builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
 
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
 
 // Configuração de logging com persistência no banco de dados
-builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();

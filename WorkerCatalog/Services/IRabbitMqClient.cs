@@ -1,4 +1,4 @@
-﻿namespace WorkerCatalog.Servico
+﻿namespace WorkerCatalog.Services
 {
     public interface IRabbitMqClient
     {

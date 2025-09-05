@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using WorkerCatalog;
 using WorkerCatalog.Data;
-using WorkerCatalog.Servico;
+using WorkerCatalog.Services;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddHostedService<Worker>();

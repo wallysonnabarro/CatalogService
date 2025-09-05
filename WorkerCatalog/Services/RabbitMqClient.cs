@@ -2,7 +2,7 @@
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace WorkerCatalog.Servico
+namespace WorkerCatalog.Services
 {
     public class RabbitMqClient : IRabbitMqClient
     {

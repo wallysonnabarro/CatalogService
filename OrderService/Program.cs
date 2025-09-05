@@ -27,12 +27,25 @@ builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
 builder.Services.AddHttpContextAccessor();
 
 // Configuração de logging com persistência no banco de dados
-builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+
+// Adicionar no builder.Services
+builder.Services.AddHttpClient("CatalogService", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["apis:catalogo"]!);
+    client.DefaultRequestHeaders.Add("User-Agent", "OrderService");
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+    return handler;
+});
 
 var app = builder.Build();
 

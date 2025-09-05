@@ -3,7 +3,7 @@ using System.Text.Json;
 using WorkerCatalog.Data;
 using WorkerCatalog.Models;
 
-namespace WorkerCatalog.Servico
+namespace WorkerCatalog.Services
 {
     public class ProcessarEvento : IProcessarEvento
     {

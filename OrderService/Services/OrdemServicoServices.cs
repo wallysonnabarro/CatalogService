@@ -4,7 +4,8 @@ using System.Text.Json;
 
 namespace OrderService.Services
 {
-    public class OrdemServicoServices(IConfiguration _configuration, IRabbitMqClient _rabbitMqClient, ICorrelationLogger _logger) : IOrdemServicoServices
+    public class OrdemServicoServices(IConfiguration _configuration, IRabbitMqClient _rabbitMqClient, 
+        ICorrelationLogger _logger, IHttpClientFactory _httpClientFactory) : IOrdemServicoServices
     {
         public async Task AtualizarQuantidadeProdutos(List<Produto> lista)
         {
@@ -19,20 +20,18 @@ namespace OrderService.Services
 
             try
             {
-                using (HttpClient client = new HttpClient())
-                {
-                    var jsonConvenio = JsonSerializer.Serialize(lista);
-                    var url = _configuration["apis:catalogo"] + "/catalog/produtos/validar-lista-produtos";
+                using var client = _httpClientFactory.CreateClient("CatalogService");
 
-                    var responseMessage = await client.PostAsync(url,
+                var jsonConvenio = JsonSerializer.Serialize(lista);
+                var url = "/catalog/produtos/validar-lista-produtos";
+
+                var responseMessage = await client.PostAsync(url,
                                               new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
 
-                    var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var responseContent = await responseMessage.Content.ReadAsStringAsync();
+                var retorno = JsonSerializer.Deserialize<List<ProdutosListaModels>>(responseContent);
 
-                    var retorno = JsonSerializer.Deserialize<List<ProdutosListaModels>>(responseContent);
-
-                    return retorno ?? new List<ProdutosListaModels>();
-                }
+                return retorno ?? new List<ProdutosListaModels>();
             }
             catch (Exception e)
             {
