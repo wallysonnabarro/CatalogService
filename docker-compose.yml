@@ -9,6 +9,10 @@ volumes:
   sql5_data:
   rabbitmq_data:
 
+x-common-variables: &common-variables
+  TZ: America/Sao_Paulo
+  DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: false
+
 services:
   sql1:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -106,6 +110,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__LogConnection: "Server=sql3,1433;Database=db-ms-gateway;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      <<: *common-variables
     ports:
       - "5000:8080"
       - "5001:8081"
@@ -123,6 +128,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__DefaultConnection: "Server=sql2,1433;Database=db-ms-produtos;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      <<: *common-variables
     networks:
       - backend
       
@@ -137,6 +143,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       ConnectionStrings__DefaultConnection: "Server=sql4,1433;Database=db-ms-autenticacao;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
+      <<: *common-variables
     ports:
       - "5004:8080"
       - "5005:8081"
@@ -160,6 +167,7 @@ services:
       RabbitMQ__Port: "5672"
       RabbitMQ__User: "guest"
       RabbitMQ__Password: "guest"
+      <<: *common-variables
     networks:
       - backend
       
@@ -183,5 +191,6 @@ services:
       RabbitMQ__Port: "5672"
       RabbitMQ__User: "guest"
       RabbitMQ__Password: "guest"
+      <<: *common-variables
     networks:
       - backend
