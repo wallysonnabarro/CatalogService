@@ -47,7 +47,7 @@ services:
       SA_PASSWORD: "Your_password123"
       MSSQL_PID: "Developer"
     ports:
-      - "14334:1433"
+      - "14335:1433"
     volumes:
       - sql3_data:/var/opt/mssql
     networks:
@@ -61,7 +61,7 @@ services:
       SA_PASSWORD: "Your_password123"
       MSSQL_PID: "Developer"
     ports:
-      - "14334:1433"
+      - "14336:1433"
     volumes:
       - sql4_data:/var/opt/mssql
     networks:
