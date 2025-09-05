@@ -11,18 +11,18 @@ namespace OAuthServices.Models
         
         [Required]
         [StringLength(50)]
-        public string CorrelationId { get; set; }
+        public required string CorrelationId { get; set; }
         
         [Required]
         [StringLength(100)]
-        public string ServiceName { get; set; }
+        public required string ServiceName { get; set; }
         
         [Required]
         [StringLength(20)]
-        public string LogLevel { get; set; }
+        public required string LogLevel { get; set; }
         
         [Required]
-        public string Message { get; set; }
+        public required string Message { get; set; }
         
         public string? Exception { get; set; }
         

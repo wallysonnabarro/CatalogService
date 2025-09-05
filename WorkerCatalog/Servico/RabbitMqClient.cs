@@ -1,8 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata;
-using RabbitMQ.Client;
+﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
-using System.Threading.Channels;
 
 namespace WorkerCatalog.Servico
 {
@@ -78,7 +76,7 @@ namespace WorkerCatalog.Servico
                             await _channel.BasicNackAsync(ea.DeliveryTag, false, false);
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
                         // Rejeitar mensagem com requeue para tentar novamente
                         await _channel.BasicNackAsync(ea.DeliveryTag, false, true);
@@ -94,7 +92,7 @@ namespace WorkerCatalog.Servico
                     await Task.Delay(50000, stoppingToken);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 await Task.Delay(5000, stoppingToken);
             }

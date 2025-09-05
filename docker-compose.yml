@@ -6,6 +6,8 @@ networks:
 volumes:
   sql1_data:
   sql2_data:
+  sql3_data:
+  sql4_data:
   rabbitmq_data:
 
 services:
@@ -37,6 +39,34 @@ services:
     networks:
       - backend
       
+  sql3:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql3
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_password123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "14334:1433"
+    volumes:
+      - sql3_data:/var/opt/mssql
+    networks:
+      - backend
+      
+  sql4:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sql4
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "Your_password123"
+      MSSQL_PID: "Developer"
+    ports:
+      - "14334:1433"
+    volumes:
+      - sql4_data:/var/opt/mssql
+    networks:
+      - backend
+      
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
@@ -58,6 +88,11 @@ services:
         condition: service_started
       orderservice:
         condition: service_started
+      sql3:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=sql3,1433;Database=db-ms-gateway;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
     ports:
       - "5000:8080"
       - "5001:8081"
@@ -84,8 +119,11 @@ services:
       dockerfile: OAuthServices/Dockerfile
     container_name: oauthservices
     depends_on:
-      sql1:
+      sql4:
         condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      ConnectionStrings__Default: "Server=sql4,1433;Database=db-ms-autenticacao;User Id=sa;Password=Your_password123;Encrypt=True;TrustServerCertificate=True;"
     ports:
       - "5004:8080"
       - "5005:8081"

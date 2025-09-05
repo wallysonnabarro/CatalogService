@@ -1,6 +1,5 @@
 using OrderService.Data;
 using OrderService.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace OrderService.Services
 {

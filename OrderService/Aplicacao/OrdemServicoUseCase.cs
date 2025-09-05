@@ -1,7 +1,7 @@
 ﻿using OrderService.Data;
 using OrderService.Models;
 using OrderService.Models.Resultados;
-using OrderService.Servico;
+using OrderService.Services;
 
 namespace OrderService.Aplicacao
 {

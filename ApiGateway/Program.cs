@@ -38,9 +38,9 @@ builder.Services.AddDbContext<LogContextDb>(options =>
 builder.Services.AddHttpContextAccessor();
 
 // Configuração de logging com persistência no banco de dados
+builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();

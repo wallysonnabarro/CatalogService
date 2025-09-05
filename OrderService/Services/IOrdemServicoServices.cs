@@ -1,6 +1,6 @@
 ﻿using OrderService.Models;
 
-namespace OrderService.Servico
+namespace OrderService.Services
 {
     public interface IOrdemServicoServices
     {

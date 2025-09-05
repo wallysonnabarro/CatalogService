@@ -4,7 +4,6 @@ using OrderService.Aplicacao;
 using OrderService.Data;
 using OrderService.Middleware;
 using OrderService.Services;
-using OrderService.Servico;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +27,9 @@ builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
 builder.Services.AddHttpContextAccessor();
 
 // Configuração de logging com persistência no banco de dados
+builder.Services.AddSingleton<ILoggerProvider, DatabaseLoggerProvider>();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
-builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();

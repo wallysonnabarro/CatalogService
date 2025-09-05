@@ -1,24 +1,34 @@
 ﻿using CatalogService.Models;
 using CatalogService.Models.Resultados;
+using CatalogService.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace CatalogService.Data
 {
     public class ProdutosRepository : GenericRepository<Produto>, IProdutosRepository
     {
-        public ProdutosRepository(ContextDb context) : base(context)
-        {
+        private readonly ICorrelationLogger _logger;
 
+        public ProdutosRepository(ContextDb context, ICorrelationLogger logger) : base(context)
+        {
+            _logger = logger;
         }
 
         public async Task<Result<Guid>> AdicionarProduto(ProdutoModel model)
         {
             try
             {
+                _logger.LogInformation("Buscando produto por ID: {ProdutoId}", JsonSerializer.Serialize(model));
+
                 var existe = await _context.Produtos.AnyAsync(x => x.Nome.ToLower() == model.Nome.ToLower());
 
                 if (existe)
+                {
+                    _logger.LogInformation("Já existe um produto cadastrado com esse nome.", model.Nome);
+
                     return Result<Guid>.Failed(new Errors { Description = "Já existe um produto cadastrado com esse nome." });
+                }
 
                 var produto = new Produto
                 {
@@ -33,6 +43,7 @@ namespace CatalogService.Data
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Erro ao adicionar um novo produto.", JsonSerializer.Serialize(model));
                 return Result<Guid>.Failed(new Errors { Description = e.Message });
             }
         }
@@ -41,6 +52,8 @@ namespace CatalogService.Data
         {
             try
             {
+                _logger.LogInformation("Persistir atualização da quantidade do produto.", JsonSerializer.Serialize(lista));
+
                 foreach (var item in lista)
                 {
                     var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == item.ProdutoId);
@@ -54,6 +67,7 @@ namespace CatalogService.Data
             }
             catch (Exception e)
             {
+                _logger.LogError(e, "Erro ao atualizar a quantidade do produto.", JsonSerializer.Serialize(lista));
                 throw new Exception(e.Message);
             }
         }
@@ -62,12 +76,15 @@ namespace CatalogService.Data
         {
             try
             {
+                _logger.LogInformation($"Persistir atualizar situação do produto. {status.ToString()}", id);
+
                 var produto = await GetByIdAsync(id);
                 produto.Status = status.ToString();
                 return Result<bool>.Success;
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Erro ao atulizar a situação do produto. {status.ToString()}", id);
                 return Result<bool>.Failed(new Errors { Description = e.Message });
             }
         }
@@ -76,10 +93,13 @@ namespace CatalogService.Data
         {
             try
             {
+                _logger.LogInformation($"Buscar produto por id", id);
+
                 return Result<Produto>.Sucesso(await GetByIdAsync(id));
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Erro ao buscar produto por id.", id);
                 return Result<Produto>.Failed(new Errors { Description = e.Message });
             }
         }
@@ -88,6 +108,8 @@ namespace CatalogService.Data
         {
             try
             {
+                _logger.LogInformation($"Buscar produto produtos paginado", wrapper.Page);
+
                 var quantidade = await CountAsync(expression: c => c.Status == SituacaoEnum.Ativo.ToString());
 
                 var dados = await FindPagedAsync(
@@ -109,6 +131,7 @@ namespace CatalogService.Data
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Erro ao buscar produto paginados.", wrapper.Page);
                 return Result<Paginacao<Produto>>.Failed(new Errors { Description = e.Message });
             }
         }
@@ -117,6 +140,8 @@ namespace CatalogService.Data
         {
             try
             {
+                _logger.LogInformation($"Busca lista de produtos.", JsonSerializer.Serialize(lista));
+
                 List<ProdutosListaModels> nova = new List<ProdutosListaModels>();
 
                 foreach (var id in lista)
@@ -124,7 +149,7 @@ namespace CatalogService.Data
                     var produto = await _context.Produtos.FirstOrDefaultAsync(x => x.Id == id);
                     if (produto != null && produto.Status.Equals(SituacaoEnum.Ativo.ToString()))
                     {
-                        nova.Add(new ProdutosListaModels { Id = produto.Id, Valor = produto.Valor});
+                        nova.Add(new ProdutosListaModels { Id = produto.Id, Valor = produto.Valor });
                     }
                 }
 
@@ -132,6 +157,7 @@ namespace CatalogService.Data
             }
             catch (Exception e)
             {
+                _logger.LogError(e, $"Erro ao buscar lista de produtos.", JsonSerializer.Serialize(lista));
                 return Result<ICollection<ProdutosListaModels>>.Failed(new Errors { Description = e.Message });
             }
         }

@@ -3,26 +3,29 @@ using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace OrderService.Servico
+namespace OrderService.Services
 {
     public class RabbitMqClient : IRabbitMqClient
     {
         private readonly IConfiguration _config;
+        private readonly ICorrelationLogger _logger;
 
-        public RabbitMqClient(IConfiguration config)
+        public RabbitMqClient(IConfiguration config, ICorrelationLogger logger)
         {
             _config = config;
+            _logger = logger;
         }
 
         public async Task PublicarAtualizarQuantidadeProdutosAsync(List<Produto> lista)
         {
             try
             {
+                _logger.LogInformation("Iniciando publicação da lista de produtos - evento", lista.Count);
 
                 var factory = new ConnectionFactory
                 {
                     HostName = _config["RabbitMQ:Host"]!,
-                    Port = Int32.Parse(_config["RabbitMQ:Port"]!),
+                    Port = int.Parse(_config["RabbitMQ:Port"]!),
                     UserName = _config["RabbitMQ:User"]!,
                     Password = _config["RabbitMQ:Password"]!
                 };
@@ -53,7 +56,7 @@ namespace OrderService.Servico
             }
             catch (Exception e)
             {
-
+                _logger.LogError(e, "Erro ao publicar a lista de produtos - event", lista.Count);
                 throw;
             }
         }
