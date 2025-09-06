@@ -8,11 +8,13 @@ namespace Web.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUsuarioServices _usuarioServices;
+        private readonly ICorrelationLogger _correlationLogger;
 
-        public HomeController(ILogger<HomeController> logger, IUsuarioServices usuarioServices)
+        public HomeController(ILogger<HomeController> logger, IUsuarioServices usuarioServices, ICorrelationLogger correlationLogger)
         {
             _logger = logger;
             _usuarioServices = usuarioServices;
+            _correlationLogger = correlationLogger;
         }
 
         public IActionResult Index()
@@ -23,32 +25,53 @@ namespace Web.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(string email)
         {
-            var emailExiste = await _usuarioServices.VerificarEmailExiste(email);
+            _correlationLogger.LogInformation("Tentativa de criação de usuário de teste para o email: {Email}", email);
 
-            if (emailExiste)
+            try
             {
-                TempData["resultMessage"] = "E-mail j� cadastrado.";
+                var emailExiste = await _usuarioServices.VerificarEmailExiste(email);
+
+                if (emailExiste)
+                {
+                    _correlationLogger.LogWarning("Tentativa de criar usuário de teste com email já existente: {Email}", email);
+                    TempData["resultMessage"] = "E-mail já cadastrado.";
+                    return View();
+                }
+
+                var novo = new NovoUsuarioModel
+                {
+                    Nome = "docker compose",
+                    Email = email,
+                    Senha = "123456dC@d1",
+                    ConfirmarSenha = "123456dC@d1"
+                };
+
+                await _usuarioServices.NovoUsuario(novo);
+
+                _correlationLogger.LogInformation("Usuário de teste criado com sucesso para o email: {Email}", email);
+                TempData["resultMessage"] = "Sucesso!";
                 return View();
             }
-
-            var novo = new NovoUsuarioModel
+            catch (Exception ex)
             {
-                Nome = "docker compose",
-                Email = email,
-                Senha = "123456dC@d1",
-                ConfirmarSenha = "123456dC@d1"
-            };
-
-            await _usuarioServices.NovoUsuario(novo);
-
-            TempData["resultMessage"] = "Sucesso!";
-            return View();
+                _correlationLogger.LogError(ex, "Erro ao criar usuário de teste para o email: {Email}", email);
+                TempData["resultMessage"] = "Erro ao criar usuário. Tente novamente.";
+                return View();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View();
+            var errorViewModel = new ErrorViewModel
+            {
+                RequestId = HttpContext.TraceIdentifier,
+                ErrorMessage = TempData["ErrorMessage"]?.ToString(),
+                ErrorCode = TempData["ErrorCode"]?.ToString(),
+                CorrelationId = HttpContext.Items["CorrelationId"]?.ToString()
+            };
+
+            return View(errorViewModel);
         }
     }
 }

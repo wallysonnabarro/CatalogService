@@ -18,7 +18,7 @@ namespace OAuthServices.Aplicacao
 
                 var existe = await _usuario.GetUserByEmailAny(input);
 
-                return Result<bool>.Success;
+                return Result<bool>.Sucesso(existe);
             }
             catch (Exception e)
             {

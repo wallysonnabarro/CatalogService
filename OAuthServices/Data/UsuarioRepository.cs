@@ -25,7 +25,11 @@ namespace OAuthServices.Data
 
         public async Task<bool> GetUserByEmailAny(string email)
         {
-            return await ExistsAsync(x => x.Email.Equals(email));
+            var existe = await _context.Usuarios.FirstOrDefaultAsync(x => x.Email.Equals(email));
+
+            if(existe == null) return false;
+
+            return true;
         }
 
         public async Task<Guid> Novo(Usuario usuario)

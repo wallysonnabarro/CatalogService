@@ -32,7 +32,7 @@ namespace OAuthServices.Controllers
 
             if (!result.Succeeded) return BadRequest(new { message = result.ToString() });
 
-            return Ok(result);
+            return Ok(result.Dados);
         }
     }
 }
