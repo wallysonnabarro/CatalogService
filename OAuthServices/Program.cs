@@ -53,7 +53,7 @@ builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(o => o.AddPolicy("spa",
-    p => p.WithOrigins("https://webservices:8081")
+    p => p.WithOrigins("http://webservices:8080")
           .AllowAnyHeader()
           .AllowAnyMethod()
           .AllowCredentials()));
