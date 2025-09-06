@@ -635,22 +635,124 @@ body {
 
 .config-footer {
     background-color: #f8f9fc !important;
-    padding: 15px 30px !important;
-    text-align: center !important;
+    padding: 20px 30px !important;
     border-top: 1px solid #e9ecef !important;
 }
 
-.text-muted {
-    color: #6c757d !important;
-    font-size: 13px !important;
+.footer-info {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+}
+
+.info-message {
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 5px !important;
+    gap: 8px !important;
+    padding: 12px 16px !important;
+    background-color: #e3f2fd !important;
+    border: 1px solid #bbdefb !important;
+    border-radius: 8px !important;
+    text-align: center !important;
 }
 
 .info-icon {
+    font-size: 16px !important;
+    flex-shrink: 0 !important;
+}
+
+.info-text {
+    color: #1976d2 !important;
     font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1.4 !important;
+}
+
+.credentials-section {
+    text-align: center !important;
+}
+
+.credentials-title {
+    color: #333 !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin: 0 0 15px 0 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.credentials-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+    max-width: 400px !important;
+    margin: 0 auto !important;
+}
+
+.credential-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    background-color: white !important;
+    border: 1px solid #e9ecef !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    transition: all 0.2s ease !important;
+}
+
+.credential-item:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.credential-label {
+    color: #666 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    margin-bottom: 6px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+.credential-value {
+    color: #333 !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    font-family: 'Courier New', monospace !important;
+    background-color: #f8f9fc !important;
+    padding: 6px 12px !important;
+    border-radius: 4px !important;
+    border: 1px solid #e9ecef !important;
+    word-break: break-all !important;
+    text-align: center !important;
+    min-width: 0 !important;
+}
+
+/* Responsividade para o footer */
+@media (max-width: 768px) {
+    .config-footer {
+        padding: 15px 20px !important;
+    }
+    
+    .credentials-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+    
+    .credential-item {
+        padding: 10px 12px !important;
+    }
+    
+    .info-message {
+        padding: 10px 12px !important;
+    }
+    
+    .info-text {
+        font-size: 13px !important;
+    }
 }
 
 /* Estilos para a apresentação do estudo */
