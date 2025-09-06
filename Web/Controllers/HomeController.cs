@@ -20,11 +20,6 @@ namespace Web.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
         [HttpPost]
         public async Task<IActionResult> Index(string email)
         {

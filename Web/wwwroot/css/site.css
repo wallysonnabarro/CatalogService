@@ -465,3 +465,335 @@ body {
     overflow-x: auto;
     max-width: 100%;
 }
+
+/* Estilos para o modal customizado */
+.custom-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal .modal-content {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+}
+
+.custom-modal .modal-content h4 {
+    margin: 0 0 20px 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.custom-modal .modal-content p {
+    margin: 0 0 20px 0;
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.custom-modal .btn-close {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.custom-modal .btn-close:hover {
+    background-color: #2e59d9;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilos para o card de configuração */
+.config-card {
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    margin: 20px 0 !important;
+    overflow: hidden !important;
+    border: 1px solid #e9ecef !important;
+    display: block !important;
+    width: 100% !important;
+}
+
+.config-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    padding: 20px !important;
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+}
+
+.config-icon {
+    font-size: 24px !important;
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.config-header h5 {
+    margin: 0 !important;
+    font-weight: 600 !important;
+    font-size: 18px !important;
+}
+
+.config-body {
+    padding: 30px !important;
+}
+
+.config-description {
+    color: #666 !important;
+    font-size: 16px !important;
+    line-height: 1.6 !important;
+    margin-bottom: 25px !important;
+    text-align: center !important;
+}
+
+.form-group {
+    margin-bottom: 20px !important;
+}
+
+.form-group label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+.form-control {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    border: 1px solid #d1d3e2 !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.form-control:focus {
+    outline: none !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25) !important;
+}
+
+.form-control:disabled {
+    background-color: #f8f9fc !important;
+    color: #6c757d !important;
+}
+
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 12px 24px !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: #2e59d9 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 8px rgba(78, 115, 223, 0.3) !important;
+}
+
+.btn-icon {
+    font-size: 16px !important;
+}
+
+.config-footer {
+    background-color: #f8f9fc !important;
+    padding: 15px 30px !important;
+    text-align: center !important;
+    border-top: 1px solid #e9ecef !important;
+}
+
+.text-muted {
+    color: #6c757d !important;
+    font-size: 13px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+}
+
+.info-icon {
+    font-size: 14px !important;
+}
+
+/* Estilos para a apresentação do estudo */
+.study-presentation {
+    background: linear-gradient(135deg, #f8f9fc 0%, #e9ecef 100%) !important;
+    padding: 60px 0 !important;
+    margin-top: 40px !important;
+}
+
+.presentation-header {
+    text-align: center !important;
+    margin-bottom: 50px !important;
+}
+
+.presentation-title {
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    color: var(--primary-color) !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 15px !important;
+}
+
+.title-icon {
+    font-size: 2.5rem !important;
+}
+
+.presentation-subtitle {
+    font-size: 1.2rem !important;
+    color: #666 !important;
+    max-width: 800px !important;
+    margin: 0 auto !important;
+    line-height: 1.6 !important;
+}
+
+.study-steps {
+    max-width: 1000px !important;
+    margin: 0 auto !important;
+}
+
+.step-item {
+    background-color: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 30px !important;
+    overflow: hidden !important;
+    border-left: 4px solid var(--primary-color) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.step-item:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15) !important;
+}
+
+.step-header {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    padding: 20px 30px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+}
+
+.step-icon {
+    font-size: 1.5rem !important;
+}
+
+.step-header h3 {
+    margin: 0 !important;
+    font-size: 1.4rem !important;
+    font-weight: 600 !important;
+}
+
+.step-content {
+    padding: 30px !important;
+}
+
+.step-content p {
+    color: #333 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 20px !important;
+    font-weight: 500 !important;
+}
+
+.step-content ul {
+    margin-bottom: 25px !important;
+    padding-left: 20px !important;
+}
+
+.step-content li {
+    color: #555 !important;
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    margin-bottom: 8px !important;
+}
+
+.learning-goal {
+    background-color: #e8f4fd !important;
+    border: 1px solid #b3d9ff !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    color: #1a5490 !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+}
+
+.learning-goal strong {
+    color: var(--primary-color) !important;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .presentation-title {
+        font-size: 2rem !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+    
+    .title-icon {
+        font-size: 2rem !important;
+    }
+    
+    .presentation-subtitle {
+        font-size: 1rem !important;
+        padding: 0 20px !important;
+    }
+    
+    .step-header {
+        padding: 15px 20px !important;
+    }
+    
+    .step-header h3 {
+        font-size: 1.2rem !important;
+    }
+    
+    .step-content {
+        padding: 20px !important;
+    }
+    
+    .study-presentation {
+        padding: 40px 0 !important;
+    }
+}

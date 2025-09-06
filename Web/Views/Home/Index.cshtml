@@ -4,18 +4,218 @@
 
 @if (TempData["resultMessage"] != null)
 {
-    <div id="modal1" class="modal modal-fixed-footer">
-        <div class="modal-content">
-            <h4 style="color:black; margin: 10px;">Mensagem</h4>
-            <p style="color:black; margin-top: 80px;">@TempData["resultMessage"]</p>
-        </div>
-        <div class="modal-footer">
-            <a href="#!" class="modal-close btn teal lighten-2 texto-branco-light">Fechar</a>
+    <div class="modal fade" id="mensagemModal" tabindex="-1" aria-labelledby="mensagemModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="mensagemModalLabel">Mensagem</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>@TempData["Mensagem"]</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var mensagemModal = new bootstrap.Modal(document.getElementById('mensagemModal'));
+            mensagemModal.show();
+        });
+    </script>
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2 col-lg-6 offset-lg-3">
+            <div class="config-card">
+                <div class="config-header">
+                    <span class="config-icon">👤</span>
+                    <h5>Configuração Inicial</h5>
+                </div>
+                
+                <div class="config-body">
+                    <p class="config-description">
+                        Caso você esteja utilizando este projeto a primeira vez. Clique no botão abaixo para gerar o usuário de teste da aplicação.
+                    </p>
+
+                    <form asp-controller="Home" asp-action="Index" method="post">
+                        <div class="form-group">
+                            <input type="hidden" name="email" value="docker@compose.com.br" />
+                            <label for="email">E-mail do Usuário de Teste</label>
+                            <input type="text" value="docker@compose.com.br" disabled class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-icon">➕</span>
+                                Criar Usuário de Teste
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="config-footer">
+                    <small class="text-muted">
+                        <span class="info-icon">ℹ️</span>
+                        Este usuário será criado com as credenciais padrão para teste da aplicação
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Seção de Apresentação do Estudo -->
+<div class="study-presentation">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="presentation-header">
+                    <h2 class="presentation-title">
+                        <span class="title-icon">🚀</span>
+                        Roadmap de Estudos – Microserviços com .NET
+                    </h2>
+                    <p class="presentation-subtitle">
+                        Este projeto demonstra a implementação de uma arquitetura de microserviços completa usando .NET 9
+                    </p>
+                </div>
+
+                <div class="study-steps">
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 1 – Fundamentos</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Criar dois microserviços independentes com .NET 9:</p>
+                            <ul>
+                                <li>Exemplo: CatalogService (produtos) e OrderService (pedidos)</li>
+                                <li>Cada um com seu próprio banco de dados (SQL Server)</li>
+                                <li>Usar Swagger para expor endpoints</li>
+                                <li>Aprender a comunicação síncrona entre eles (REST)</li>
+                                <li>Ex.: o OrderService chama o CatalogService para validar se o produto existe</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> separação de responsabilidades, comunicação síncrona entre APIs
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 2 – Autenticação e Autorização</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Criar um IdentityService para gerenciar usuários e autenticação (JWT):</p>
+                            <ul>
+                                <li>Configurar os outros serviços para validar o JWT</li>
+                                <li>Implementar roles/claims básicas (ex.: Admin, User)</li>
+                                <li>Autenticação centralizada e autorização distribuída</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> autenticação centralizada e autorização distribuída
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 3 – Comunicação Assíncrona</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Adicionar mensageria (RabbitMQ):</p>
+                            <ul>
+                                <li>Quando um pedido é criado no OrderService, enviar evento "OrderCreated"</li>
+                                <li>O WorkerCatalog consome esse evento e processa a atualização</li>
+                                <li>Garantir que os serviços não fiquem acoplados diretamente</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> event-driven architecture (arquitetura orientada a eventos)
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 4 – API Gateway</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Adicionar um API Gateway usando Ocelot:</p>
+                            <ul>
+                                <li>Expor uma entrada única /api/... para os clientes</li>
+                                <li>Redirecionar requisições para o microserviço correto</li>
+                                <li>Configurar rate limiting e caching básicos</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> centralização de acesso, abstraindo os microserviços
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 5 – Observabilidade</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Adicionar logging centralizado e monitoramento:</p>
+                            <ul>
+                                <li>Logging estruturado com Correlation ID</li>
+                                <li>Persistência de logs em banco de dados</li>
+                                <li>Rastreamento de chamadas entre serviços</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> rastreabilidade e monitoramento de sistemas distribuídos
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 6 – Resiliência e Padrões</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Implementar padrões de resiliência:</p>
+                            <ul>
+                                <li>Retry logic em chamadas REST</li>
+                                <li>Dead Letter Exchange no RabbitMQ</li>
+                                <li>Tolerância a falhas e consistência eventual</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> tolerância a falhas e consistência eventual
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-header">
+                            <span class="step-icon">🔹</span>
+                            <h3>Etapa 7 – Deploy com Containers</h3>
+                        </div>
+                        <div class="step-content">
+                            <p>Colocar cada microserviço em Docker:</p>
+                            <ul>
+                                <li>Usar Docker Compose para orquestrar os serviços</li>
+                                <li>Bancos de dados, RabbitMQ, API Gateway</li>
+                                <li>Configuração de timezone e variáveis de ambiente</li>
+                            </ul>
+                            <div class="learning-goal">
+                                <strong>🎯 Aprendizado:</strong> deploy escalável e isolamento de serviços
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
