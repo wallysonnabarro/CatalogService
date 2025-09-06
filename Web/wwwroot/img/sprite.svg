@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+    <symbol id="icon-title" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="8" fill="#333" />
+        <text x="50%" y="55%" font-size="38" font-family="Arial, sans-serif" fill="white"
+            font-weight="bold" text-anchor="middle" dominant-baseline="middle">
+            T
+        </text>
+    </symbol>
+
+    <symbol id="icon-link" viewBox="0 0 64 64">
+        <rect width="64" height="64" rx="8" fill="#333" />
+        <text x="50%" y="55%" font-size="38" font-family="Arial, sans-serif" fill="white"
+            font-weight="bold" text-anchor="middle" dominant-baseline="middle">
+            L
+        </text>
+    </symbol>
+
+    <symbol id="icon-contato" viewBox="0 0 64 64">
+        <circle cx="32" cy="32" r="30" fill="#333" />
+        <path
+            d="M43.57 33.51c-3.47-3.47-8.56-5.87-13.77-6.43-1.57-.18-3.14-.14-4.7.12-1.21.18-2.39.58-3.46 1.14-1.37.69-2.51 1.55-3.53 2.57-1.09 1.02-1.98 2.17-2.7 3.45-1.47 2.4-.87 5.52 1.27 7.66 3.4 3.4 5.81 8.44 6.4 13.24.21 1.58 1.1 2.83 2.3 4.03 1.19 1.19 2.52 2.1 4.02 2.3 4.8-.59 9.84-2.99 13.24-6.4 2.13-2.13 2.73-5.26 1.27-7.66-.77-1.28-1.61-2.43-2.7-3.45z"
+            fill="white" />
+    </symbol>
+
+    <symbol id="icon-livros" viewBox="0 0 64 64">
+        <!-- Círculo de fundo -->
+        <circle cx="32" cy="32" r="30" fill="#878686" />
+
+        <!-- Livro 1 -->
+        <rect x="18" y="18" width="8" height="28" fill="white" />
+        <line x1="18" y1="22" x2="26" y2="22" stroke="black" stroke-width="2" />
+
+        <!-- Livro 2 -->
+        <rect x="28" y="14" width="8" height="32" fill="white" />
+        <line x1="28" y1="18" x2="36" y2="18" stroke="black" stroke-width="2" />
+
+        <!-- Livro 3 -->
+        <rect x="38" y="20" width="8" height="26" fill="white" />
+        <line x1="38" y1="24" x2="46" y2="24" stroke="black" stroke-width="2" />
+    </symbol>
+</svg>

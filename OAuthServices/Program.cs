@@ -22,6 +22,9 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<LogContextDb>(options =>
     options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
+builder.Services.AddDbContext<ContextDb>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
+
 builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
 
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
@@ -34,31 +37,42 @@ builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildSer
 
 // Registra o serviço de logging com Correlation ID
 builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<ICadastroUsuarioUseCase, CadastroUsuarioUseCase>();
+builder.Services.AddScoped<IValidarEmailUseCase, ValidarEmailUseCase>();
 
-// JWT - OAuth 2.0 configuration
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", opts =>
     {
-        ValidateIssuer = true,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        ValidateAudience = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
-        ValidateLifetime = false,
-        ValidateIssuerSigningKey = true
-    };
-});
+        opts.TokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:SecretKey"]!)),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
 
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 
+builder.Services.AddCors(o => o.AddPolicy("spa",
+    p => p.WithOrigins("https://webservices:8081")
+          .AllowAnyHeader()
+          .AllowAnyMethod()
+          .AllowCredentials()));
+
 var app = builder.Build();
+app.UseCors("spa");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
@@ -69,6 +83,16 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
         s.SwaggerEndpoint("/swagger/v1/swagger.json", "Microservi�o de autentica��o e autoriza��o v1.0");
     });
 }
+
+app.Use(async (ctx, next) =>
+{
+    // Anti-CSRF (double-submit): se vier header, confira com cookie (opcional)
+    // var xsrfHeader = ctx.Request.Headers["X-XSRF-TOKEN"].ToString();
+    // var xsrfCookie = ctx.Request.Cookies["XSRF-TOKEN"];
+    // if (ctx.Request.Method != "GET" && xsrfHeader != xsrfCookie) ctx.Response.StatusCode = 400;
+
+    await next();
+});
 
 app.UseHttpsRedirection();
 
