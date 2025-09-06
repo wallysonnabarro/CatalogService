@@ -2,6 +2,7 @@ using CatalogService.Data;
 using CatalogService.Middleware;
 using CatalogService.Services;
 using Microsoft.EntityFrameworkCore;
+using OrderService;
 using System.Reflection;
 using System.Text.Json.Serialization;
 
@@ -26,8 +27,6 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddDbContext<LogContextDb>(options =>
     options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
-builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
-
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
 
@@ -36,8 +35,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
-// Registra o serviço de logging com Correlation ID
-builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

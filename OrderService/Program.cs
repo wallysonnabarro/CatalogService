@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using OrderService;
 using OrderService.Aplicacao;
 using OrderService.Data;
 using OrderService.Middleware;
@@ -22,11 +23,6 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddDbContext<LogContextDb>(options =>
     options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
-builder.Services.AddScoped<IOrdemServicoUseCase, OrdemServicoUseCase>();
-builder.Services.AddScoped<IOrdemServicoServices, OrdemServicoServices>();
-builder.Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
-builder.Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
-
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
 
@@ -35,10 +31,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
-// Registra o serviço de logging com Correlation ID
-builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
-
-// Adicionar no builder.Services
 builder.Services.AddHttpClient("CatalogService", client =>
 {
     client.BaseAddress = new Uri(builder.Configuration["apis:catalogo"]!);
@@ -50,6 +42,8 @@ builder.Services.AddHttpClient("CatalogService", client =>
     handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
     return handler;
 });
+
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 

@@ -142,7 +142,7 @@ O sistema simula um e-commerce onde:
 - **CatalogService** → `ContextDb` (sql2) ✅
 - **OrderService** → `ContextDb` (sql1) ✅
 - **ApiGateway** → `LogContextDb` (sql3) ✅
-- **OAuthServices** → `LogContextDb` (sql4) ❌ (sem migrações)
+- **OAuthServices** → `ContextDb` (sql4) ✅
 - **WorkerCatalog** → `LogContextDb` (sql5) ❌ (sem migrações)
 
 #### **Comandos de Migração**
@@ -156,13 +156,19 @@ cd /src/ApiGateway
 dotnet ef migrations list --context LogContextDb
 dotnet ef database update --context LogContextDb
 
-# 2. SEGUNDO: CatalogService (ContextDb)
+# 2. SEGUNDO: OAuthServices (ContextDb)
+docker exec -it oauthservices bash
+cd /src/OAuthServices
+dotnet ef migrations list --context ContextDb
+dotnet ef database update --context ContextDb
+
+# 3. TERCEIRO: CatalogService (ContextDb)
 docker exec -it catalogservice bash
 cd /src/CatalogService
 dotnet ef migrations list --context ContextDb
 dotnet ef database update --context ContextDb
 
-# 3. TERCEIRO: OrderService (ContextDb)
+# 4. QUARTO: OrderService (ContextDb)
 docker exec -it orderservice bash
 cd /src/OrderService
 dotnet ef migrations list --context ContextDb
@@ -171,8 +177,9 @@ dotnet ef database update --context ContextDb
 
 **Ordem de Execução:**
 1. **LogContextDb** (ApiGateway) - Primeiro
-2. **ContextDb** (CatalogService) - Segundo  
-3. **ContextDb** (OrderService) - Terceiro
+2. **ContextDb** (OAuthServices) - Segundo
+3. **ContextDb** (CatalogService) - Terceiro  
+4. **ContextDb** (OrderService) - Quarto
 
 ⚠️ **Após executar as migrações, reinicie o WorkerCatalog:**
 ```bash

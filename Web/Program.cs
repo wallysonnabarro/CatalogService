@@ -1,12 +1,22 @@
+using Microsoft.EntityFrameworkCore;
+using Web.Data;
 using Web.Services;
+using Web.Middleware;
+using Web;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<ILoginServices, LoginServices>();
-builder.Services.AddScoped<IUsuarioServices, UsuarioServices>();
+builder.Services.AddDbContext<LogContextDb>(options =>
+    options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
+
+builder.Services.AddHttpContextAccessor();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
 // Adicionar no builder.Services
 builder.Services.AddHttpClient("webservices", client =>
@@ -23,17 +33,20 @@ builder.Services.AddHttpClient("webservices", client =>
 
 builder.Services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
+builder.Services.AddInfrastructure(builder.Configuration);
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
+app.UseCorrelationId();
+
 app.UseRouting();
 
 app.UseAuthorization();

@@ -1,8 +1,7 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using OAuthServices.Aplicacao;
+using OAuthServices;
 using OAuthServices.Data;
 using OAuthServices.Middleware;
 using OAuthServices.Services;
@@ -25,8 +24,6 @@ builder.Services.AddDbContext<LogContextDb>(options =>
 builder.Services.AddDbContext<ContextDb>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
-builder.Services.AddScoped<IJWTOAuth, JWTOAuth>();
-
 // Adiciona HttpContextAccessor para acessar o contexto HTTP
 builder.Services.AddHttpContextAccessor();
 
@@ -34,16 +31,6 @@ builder.Services.AddHttpContextAccessor();
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
-
-// Registra o serviço de logging com Correlation ID
-builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
-builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IRoleRepository, RoleRepository>();
-builder.Services.AddScoped<ITokenRepository, TokenRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<ICadastroUsuarioUseCase, CadastroUsuarioUseCase>();
-builder.Services.AddScoped<IValidarEmailUseCase, ValidarEmailUseCase>();
 
 builder.Services.AddAuthentication("Bearer")
     .AddJwtBearer("Bearer", opts =>
@@ -70,6 +57,8 @@ builder.Services.AddCors(o => o.AddPolicy("spa",
           .AllowAnyHeader()
           .AllowAnyMethod()
           .AllowCredentials()));
+
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 app.UseCors("spa");

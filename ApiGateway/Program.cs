@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +5,7 @@ using System.Text;
 using ApiGateway.Data;
 using ApiGateway.Middleware;
 using ApiGateway.Services;
+using ApiGateway;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,9 +39,6 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole(); 
 builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
-// Registra o serviço de logging com Correlation ID
-builder.Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
-
 builder.Services.AddReverseProxy()
        .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
 
@@ -55,6 +52,8 @@ builder.Services.AddRateLimiter(options =>
         opt.QueueProcessingOrder = System.Threading.RateLimiting.QueueProcessingOrder.OldestFirst;
     });
 });
+
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
