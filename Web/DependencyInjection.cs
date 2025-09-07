@@ -1,4 +1,5 @@
 ﻿using Web.Services;
+using Web.Filter;
 
 namespace Web
 {
@@ -9,6 +10,7 @@ namespace Web
             Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
             Services.AddScoped<ILoginServices, LoginServices>();
             Services.AddScoped<IUsuarioServices, UsuarioServices>();
+            Services.AddScoped<ValidarTokenFilter>();
 
             return Services;
         }

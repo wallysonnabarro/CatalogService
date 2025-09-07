@@ -34,11 +34,11 @@ namespace Web.Filter
             {
                 using var client = _httpClientFactory.CreateClient("webservices");
 
-                var jsonConvenio = JsonSerializer.Serialize(token);
+                var jsonBody = JsonSerializer.Serialize(new { token = token });
                 var url = "api/auth/validate-token";
 
                 var responseMessage = await client.PostAsync(url,
-                                              new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
+                                              new StringContent(jsonBody, Encoding.UTF8, "application/json"));
 
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
                 bool existe = JsonSerializer.Deserialize<bool>(responseContent);

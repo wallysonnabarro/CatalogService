@@ -60,32 +60,44 @@ namespace OAuthServices.Controllers
 
             var roles = await _roleRepository.GetRolesByUserId(resultado.Dados);
 
+            var expiration = model.RememberMe
+            ? DateTimeOffset.UtcNow.AddDays(30)  // ← 30 dias se marcar "lembrar-me"
+            : DateTimeOffset.UtcNow.AddHours(1);
+
             var access = await _tokens.CreateAccessToken(resultado.Dados, roles, TimeSpan.FromMinutes(5));
             var (refreshToken, jti, exp) = await _tokens.CreateRefreshToken(resultado.Dados);
 
             // cookie com jti + segredo; aqui simples: guarde jti e um valor random
             Response.Cookies.Append("refresh_jti", jti, new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
+                HttpOnly = false,
+                Secure = false,
                 SameSite = SameSiteMode.Lax,
                 Expires = exp,
                 Path = "bff/auth/refresh"
             });
             Response.Cookies.Append("refresh_val", refreshToken, new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
+                HttpOnly = false,
+                Secure = false,
                 SameSite = SameSiteMode.Lax,
                 Expires = exp,
                 Path = "bff/auth/refresh"
+            });
+
+            Response.Cookies.Append("Authorization", $"Bearer {access}", new CookieOptions
+            {
+                HttpOnly = false,
+                Secure = false,
+                SameSite = SameSiteMode.Lax,
+                Expires = expiration
             });
 
             // (opcional) XSRF para POST/PUT/DELETE
             Response.Cookies.Append("XSRF-TOKEN", Guid.NewGuid().ToString("N"),
                 new CookieOptions { HttpOnly = false, Secure = true, SameSite = SameSiteMode.Lax });
 
-            return Ok(new { accessToken = access });
+            return Ok(new { Access_token = access });
         }
 
         [HttpPost("refresh")]
@@ -139,13 +151,19 @@ namespace OAuthServices.Controllers
         }
 
         [HttpPost("validate-token")]
-        public async Task<IActionResult> ValidateToken(string token)
+        public async Task<IActionResult> ValidateToken([FromBody] ValidateTokenRequest request)
         {
-            var valido = await _tokens.ValidarToken(token);
+            var valido = await _tokens.ValidarToken(request.token);
 
-            if(valido == false) return Unauthorized(valido);
+            if (valido == false) return Unauthorized(valido);
 
             return Ok(valido);
         }
+    }
+
+    // Adicione esta classe no OAuth
+    public class ValidateTokenRequest
+    {
+        public string token { get; set; }
     }
 }

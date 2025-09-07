@@ -33,7 +33,7 @@ namespace Web.Services
                                               new StringContent(jsonConvenio, Encoding.UTF8, "application/json"));
 
                 var responseContent = await responseMessage.Content.ReadAsStringAsync();
-                var token = JsonSerializer.Deserialize<string>(responseContent);
+                var token = JsonSerializer.Deserialize<AccessToken>(responseContent);
 
                 // Extrair cookies da resposta
                 var cookies = new List<CookieInfo>();
@@ -54,9 +54,12 @@ namespace Web.Services
                                 Options = new CookieOptions
                                 {
                                     HttpOnly = cookieHeader.Contains("HttpOnly"),
-                                    Secure = cookieHeader.Contains("Secure"),
+                                    Secure = false,
                                     SameSite = cookieHeader.Contains("SameSite=Lax") ? SameSiteMode.Lax : SameSiteMode.None,
-                                    Path = ExtractPath(cookieHeader)
+                                    Path = ExtractPath(cookieHeader),
+                                    Expires = cookieHeader.Contains("Expires=") ?
+                                              DateTimeOffset.Parse(cookieHeader.Split("Expires=")[1].Split(';')[0].Trim()) :
+                                              (DateTimeOffset?)null
                                 }
                             });
                         }
@@ -65,7 +68,7 @@ namespace Web.Services
 
                 var result = new AuthenticationResult
                 {
-                    Token = token ?? string.Empty,
+                    Token = token == null ? string.Empty: token.Access_token,
                     Cookies = cookies
                 };
 
