@@ -1,8 +1,717 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
+@{
+    ViewData["Title"] = "Dashboard - Sistema de Microserviços";
     Layout = "~/Views/Shared/_LayoutLogado.cshtml";
 }
 
+<div class="container-fluid">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <h1 class="card-title mb-0">
+                        <i class="fas fa-microchip me-3"></i>
+                        Sistema de Microserviços - E-commerce
+                    </h1>
+                    <p class="card-text mt-2 mb-0">
+                        Dashboard técnico detalhado do projeto de estudo em arquitetura de microserviços
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <!-- Visão Geral da Arquitetura -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-sitemap me-2"></i>
+                        Visão Geral da Arquitetura
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🎯 Objetivo do Projeto</h5>
+                            <p>Implementação de uma arquitetura de microserviços para um sistema de e-commerce, demonstrando conceitos modernos de desenvolvimento distribuído, comunicação assíncrona e gerenciamento de dados.</p>
+                            
+                            <h5>🏗️ Cenário de Negócio</h5>
+                            <ul>
+                                <li>Clientes fazem pedidos através de uma API</li>
+                                <li>Sistema valida produtos no catálogo</li>
+                                <li>Pedidos são processados e estoque é atualizado</li>
+                                <li>Eventos são processados de forma assíncrona</li>
+                                <li>Logs são centralizados para monitoramento</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>📊 Benefícios da Arquitetura</h5>
+                            <ul>
+                                <li><strong>Escalabilidade:</strong> Cada serviço pode ser escalado independentemente</li>
+                                <li><strong>Resiliência:</strong> Falha em um serviço não afeta outros</li>
+                                <li><strong>Manutenibilidade:</strong> Código organizado por domínio</li>
+                                <li><strong>Testabilidade:</strong> Serviços podem ser testados isoladamente</li>
+                                <li><strong>Deploy Independente:</strong> Cada serviço pode ser atualizado separadamente</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-Dashboard
+    <!-- Microserviços Implementados -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-server me-2"></i>
+                        Microserviços Implementados
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- API Gateway -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-network-wired me-2"></i>
+                                        API Gateway
+                                    </h5>
+                                    <small>Porta: 5000/5001</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Ponto único de entrada e roteamento de requisições</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>Roteamento de requisições para serviços apropriados</li>
+                                        <li>Middleware de correlação de IDs para rastreamento</li>
+                                        <li>Logging centralizado de todas as requisições</li>
+                                        <li>Gerenciamento de CORS e políticas de segurança</li>
+                                    </ul>
+                                    
+                                    <h6>Tecnologias:</h6>
+                                    <span class="badge bg-secondary me-1">ASP.NET Core 9.0</span>
+                                    <span class="badge bg-secondary me-1">Entity Framework Core</span>
+                                    <span class="badge bg-secondary">SQL Server (sql3)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Catalog Service -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-box me-2"></i>
+                                        Catalog Service
+                                    </h5>
+                                    <small>Porta: 8080/8081</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Gerenciamento do catálogo de produtos</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>CRUD de produtos</li>
+                                        <li>Validação de disponibilidade</li>
+                                        <li>Atualização de estoque</li>
+                                        <li>Paginação e filtros</li>
+                                        <li>Validação de lista de produtos</li>
+                                    </ul>
+                                    
+                                    <h6>Endpoints Principais:</h6>
+                                    <ul>
+                                        <li><code>GET /catalog/produtos</code> - Listar produtos</li>
+                                        <li><code>POST /catalog/produtos</code> - Criar produto</li>
+                                        <li><code>PUT /catalog/produtos/{id}</code> - Atualizar produto</li>
+                                        <li><code>POST /catalog/produtos/validar-lista-produtos</code> - Validar lista</li>
+                                    </ul>
+                                    
+                                    <h6>Modelo de Dados:</h6>
+                                    <div class="bg-light p-2 rounded">
+                                        <small>
+                                            <strong>Produto:</strong><br>
+                                            • Id (Guid)<br>
+                                            • Nome (string)<br>
+                                            • Valor (decimal)<br>
+                                            • QuantidadeEstoque (int)<br>
+                                            • Status (SituacaoEnum)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OAuth Services -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-danger">
+                                <div class="card-header bg-danger text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-shield-alt me-2"></i>
+                                        OAuth Services
+                                    </h5>
+                                    <small>Porta: 5004/5005</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Autenticação e autorização</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>Geração de tokens JWT</li>
+                                        <li>Validação de credenciais</li>
+                                        <li>Gerenciamento de sessões</li>
+                                        <li>Middleware de autenticação</li>
+                                        <li>Refresh tokens</li>
+                                    </ul>
+                                    
+                                    <h6>Endpoints Principais:</h6>
+                                    <ul>
+                                        <li><code>POST /api/auth/autenticar</code> - Autenticação</li>
+                                        <li><code>GET /api/auth/validate-token</code> - Validação de token</li>
+                                        <li><code>POST /api/auth/refresh</code> - Renovação de token</li>
+                                        <li><code>POST /api/auth/revoke</code> - Revogação de token</li>
+                                    </ul>
+                                    
+                                    <h6>Modelo de Dados:</h6>
+                                    <div class="bg-light p-2 rounded">
+                                        <small>
+                                            <strong>Usuario:</strong><br>
+                                            • Id, Nome, Email<br>
+                                            • PasswordHash, Salt<br>
+                                            • SecurityStamp, ConcurrencyStamp<br>
+                                            • LockoutEnd, LockoutEnabled<br>
+                                            • AccessFailedCount, Tentativas<br>
+                                            • DtRegistro, RoleId<br><br>
+                                            <strong>Role:</strong><br>
+                                            • Id, Nome, Status
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Order Service -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-shopping-cart me-2"></i>
+                                        Order Service
+                                    </h5>
+                                    <small>Porta: 8080/8081</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Processamento de pedidos</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>Criação de pedidos</li>
+                                        <li>Validação de produtos via CatalogService</li>
+                                        <li>Publicação de eventos para atualização de estoque</li>
+                                        <li>Cálculo de totais e validações</li>
+                                    </ul>
+                                    
+                                    <h6>Fluxo de Processamento:</h6>
+                                    <ol>
+                                        <li>Recebe lista de produtos</li>
+                                        <li>Valida produtos no CatalogService</li>
+                                        <li>Cria pedido no banco</li>
+                                        <li>Publica evento no RabbitMQ para atualização de estoque</li>
+                                    </ol>
+                                    
+                                    <h6>Modelo de Dados:</h6>
+                                    <div class="bg-light p-2 rounded">
+                                        <small>
+                                            <strong>OrdermServico:</strong><br>
+                                            • Id (Guid)<br>
+                                            • DataHoraRegistro (DateTime)<br>
+                                            • Status (OrdemServicoSituacaoEnum)<br>
+                                            • Total (decimal)<br>
+                                            • Produtos (List&lt;Produtos&gt;)<br><br>
+                                            <strong>Produtos:</strong><br>
+                                            • Id, ProdutoId, Quantidade, Valor
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Worker Catalog -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-secondary">
+                                <div class="card-header bg-secondary text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-cogs me-2"></i>
+                                        Worker Catalog
+                                    </h5>
+                                    <small>Background Service</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Processamento assíncrono de eventos</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>Consumo de mensagens do RabbitMQ</li>
+                                        <li>Atualização de estoque de produtos</li>
+                                        <li>Processamento de eventos de pedidos</li>
+                                        <li>Logging de operações</li>
+                                    </ul>
+                                    
+                                    <h6>Fluxo de Processamento:</h6>
+                                    <ol>
+                                        <li>Consome mensagens da fila <code>catalog</code></li>
+                                        <li>Deserializa lista de produtos</li>
+                                        <li>Atualiza quantidades no banco</li>
+                                        <li>Confirma processamento</li>
+                                    </ol>
+                                    
+                                    <h6>Tecnologias:</h6>
+                                    <span class="badge bg-secondary me-1">.NET 9.0 Worker Service</span>
+                                    <span class="badge bg-secondary me-1">RabbitMQ Client</span>
+                                    <span class="badge bg-secondary me-1">Entity Framework Core</span>
+                                    <span class="badge bg-secondary">SQL Server (sql2)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Web Application -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card h-100 border-dark">
+                                <div class="card-header bg-dark text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-globe me-2"></i>
+                                        Web Application
+                                    </h5>
+                                    <small>Porta: 5002/5003</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Responsabilidade:</h6>
+                                    <p>Interface web para gerenciamento do sistema</p>
+                                    
+                                    <h6>Funcionalidades:</h6>
+                                    <ul>
+                                        <li>Interface de login e autenticação</li>
+                                        <li>Dashboard de monitoramento</li>
+                                        <li>Gerenciamento de sessões</li>
+                                        <li>Filtros de validação de token</li>
+                                        <li>Integração com OAuth Services</li>
+                                    </ul>
+                                    
+                                    <h6>Recursos Implementados:</h6>
+                                    <ul>
+                                        <li>Sistema de login com validação de token</li>
+                                        <li>Middleware de correlação de IDs</li>
+                                        <li>Filtros de autorização</li>
+                                        <li>Gerenciamento de cookies</li>
+                                        <li>Anti-forgery tokens</li>
+                                    </ul>
+                                    
+                                    <h6>Tecnologias:</h6>
+                                    <span class="badge bg-secondary me-1">ASP.NET Core MVC</span>
+                                    <span class="badge bg-secondary me-1">Bootstrap 5</span>
+                                    <span class="badge bg-secondary me-1">jQuery</span>
+                                    <span class="badge bg-secondary">Font Awesome</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Infraestrutura -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-database me-2"></i>
+                        Infraestrutura e Tecnologias
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🗄️ Bancos de Dados</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Container</th>
+                                            <th>Porta</th>
+                                            <th>Database</th>
+                                            <th>Responsabilidade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge bg-primary">sql1</span></td>
+                                            <td>14333</td>
+                                            <td>db-ms-pedidos</td>
+                                            <td>Dados de pedidos</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-warning">sql2</span></td>
+                                            <td>14334</td>
+                                            <td>db-ms-produtos</td>
+                                            <td>Catálogo de produtos</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-info">sql3</span></td>
+                                            <td>14335</td>
+                                            <td>db-ms-gateway</td>
+                                            <td>Logs do API Gateway</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-danger">sql4</span></td>
+                                            <td>14336</td>
+                                            <td>db-ms-autenticacao</td>
+                                            <td>Dados de usuários</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-secondary">sql5</span></td>
+                                            <td>14337</td>
+                                            <td>db-ms-worker</td>
+                                            <td>Logs do Worker</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🔄 Message Broker</h5>
+                            <div class="bg-light p-3 rounded">
+                                <h6>RabbitMQ</h6>
+                                <ul>
+                                    <li><strong>Porta:</strong> 5672 (AMQP) / 15672 (Management)</li>
+                                    <li><strong>Exchange:</strong> catalog_exchange (Direct)</li>
+                                    <li><strong>Queue:</strong> catalog (Durable)</li>
+                                    <li><strong>Dead Letter Queue:</strong> dead_letters</li>
+                                </ul>
+                                <p class="mb-0">
+                                    <strong>Acesso:</strong> 
+                                    <a href="http://localhost:15672" target="_blank" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-external-link-alt me-1"></i>
+                                        RabbitMQ Management
+                                    </a>
+                                    <small class="text-muted">(guest/guest)</small>
+                                </p>
+                            </div>
+
+                            <h5 class="mt-4">🛠️ Stack Tecnológico</h5>
+                            <div class="row">
+                                <div class="col-6">
+                                    <h6>Backend:</h6>
+                                    <span class="badge bg-primary me-1 mb-1">ASP.NET Core 9.0</span>
+                                    <span class="badge bg-primary me-1 mb-1">.NET 9.0</span>
+                                    <span class="badge bg-primary me-1 mb-1">Entity Framework Core</span>
+                                    <span class="badge bg-primary me-1 mb-1">JWT Bearer</span>
+                                </div>
+                                <div class="col-6">
+                                    <h6>Infraestrutura:</h6>
+                                    <span class="badge bg-success me-1 mb-1">Docker</span>
+                                    <span class="badge bg-success me-1 mb-1">Docker Compose</span>
+                                    <span class="badge bg-success me-1 mb-1">SQL Server 2022</span>
+                                    <span class="badge bg-success me-1 mb-1">RabbitMQ 3.x</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fluxo de Dados -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="fas fa-project-diagram me-2"></i>
+                        Fluxo de Dados e Comunicação
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h5>🔄 Fluxo de Processamento de Pedidos</h5>
+                            <div class="bg-light p-3 rounded">
+                                <ol>
+                                    <li><strong>Cliente</strong> faz requisição para <strong>API Gateway</strong></li>
+                                    <li><strong>API Gateway</strong> roteia para <strong>OrderService</strong></li>
+                                    <li><strong>OrderService</strong> valida produtos no <strong>CatalogService</strong></li>
+                                    <li><strong>OrderService</strong> cria pedido no banco (sql1)</li>
+                                    <li><strong>OrderService</strong> publica evento no <strong>RabbitMQ</strong></li>
+                                    <li><strong>WorkerCatalog</strong> consome mensagem da fila</li>
+                                    <li><strong>WorkerCatalog</strong> atualiza estoque no <strong>CatalogService</strong></li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>🔐 Fluxo de Autenticação</h5>
+                            <div class="bg-light p-3 rounded">
+                                <ol>
+                                    <li><strong>Web App</strong> envia credenciais para <strong>OAuthServices</strong></li>
+                                    <li><strong>OAuthServices</strong> valida e gera JWT</li>
+                                    <li><strong>OAuthServices</strong> retorna token + cookies</li>
+                                    <li><strong>Web App</strong> armazena cookies</li>
+                                    <li><strong>ValidarTokenFilter</strong> valida token em cada requisição</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recursos Implementados -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Recursos e Padrões Implementados
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>🏗️ Padrões Arquiteturais</h5>
+                            <ul>
+                                <li><strong>Microserviços:</strong> Separação por domínio</li>
+                                <li><strong>API Gateway:</strong> Ponto único de entrada</li>
+                                <li><strong>Event-Driven:</strong> Comunicação assíncrona</li>
+                                <li><strong>CQRS:</strong> Separação de comandos e consultas</li>
+                                <li><strong>Repository Pattern:</strong> Abstração de dados</li>
+                                <li><strong>Dependency Injection:</strong> Inversão de controle</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>🔒 Segurança</h5>
+                            <ul>
+                                <li><strong>JWT Authentication:</strong> Tokens seguros</li>
+                                <li><strong>Refresh Tokens:</strong> Renovação automática</li>
+                                <li><strong>Cookie Security:</strong> HttpOnly, Secure, SameSite</li>
+                                <li><strong>Anti-Forgery:</strong> Proteção CSRF</li>
+                                <li><strong>Password Hashing:</strong> Salt + Hash</li>
+                                <li><strong>Role-Based Access:</strong> Controle de permissões</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>📊 Observabilidade</h5>
+                            <ul>
+                                <li><strong>Correlation IDs:</strong> Rastreamento de requisições</li>
+                                <li><strong>Structured Logging:</strong> Logs estruturados</li>
+                                <li><strong>Database Logging:</strong> Persistência de logs</li>
+                                <li><strong>Health Checks:</strong> Monitoramento de saúde</li>
+                                <li><strong>Error Handling:</strong> Tratamento centralizado</li>
+                                <li><strong>Request/Response Logging:</strong> Auditoria completa</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comandos Úteis -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-terminal me-2"></i>
+                        Comandos Úteis para Desenvolvimento
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>🐳 Docker</h5>
+                            <div class="bg-dark text-light p-3 rounded">
+                                <pre class="mb-0"><code># Subir todos os serviços
+docker-compose up -d
+
+# Verificar status
+docker-compose ps
+
+# Ver logs
+docker-compose logs -f
+
+# Parar serviços
+docker-compose down
+
+# Rebuild e subir
+docker-compose up --build</code></pre>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🗄️ Migrações</h5>
+                            <div class="bg-dark text-light p-3 rounded">
+                                <pre class="mb-0"><code># Executar migrações (ordem importante)
+docker exec -it apigateway bash
+cd /src/ApiGateway
+dotnet ef database update --context LogContextDb
+
+docker exec -it oauthservices bash
+cd /src/OAuthServices
+dotnet ef database update --context ContextDb
+
+docker exec -it catalogservice bash
+cd /src/CatalogService
+dotnet ef database update --context ContextDb
+
+docker exec -it orderservice bash
+cd /src/OrderService
+dotnet ef database update --context ContextDb</code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Links Úteis -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="fas fa-link me-2"></i>
+                        Links Úteis
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <h6>🌐 Serviços</h6>
+                            <a href="http://localhost:5000" target="_blank" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                API Gateway
+                            </a>
+                            <a href="http://localhost:5002" target="_blank" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Web App
+                            </a>
+                            <a href="http://localhost:5004" target="_blank" class="btn btn-outline-primary btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                OAuth Services
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>📊 Monitoramento</h6>
+                            <a href="http://localhost:15672" target="_blank" class="btn btn-outline-success btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                RabbitMQ Management
+                            </a>
+                            <a href="http://localhost:5004/swagger" target="_blank" class="btn btn-outline-success btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                OAuth Swagger
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>🗄️ Bancos de Dados</h6>
+                            <a href="sqlserver://localhost:14333" target="_blank" class="btn btn-outline-info btn-sm mb-2 w-100">
+                                <i class="fas fa-database me-1"></i>
+                                SQL1 (Pedidos)
+                            </a>
+                            <a href="sqlserver://localhost:14334" target="_blank" class="btn btn-outline-info btn-sm mb-2 w-100">
+                                <i class="fas fa-database me-1"></i>
+                                SQL2 (Produtos)
+                            </a>
+                            <a href="sqlserver://localhost:14335" target="_blank" class="btn btn-outline-info btn-sm mb-2 w-100">
+                                <i class="fas fa-database me-1"></i>
+                                SQL3 (Gateway)
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <h6>📚 Documentação</h6>
+                            <a href="#" class="btn btn-outline-warning btn-sm mb-2 w-100">
+                                <i class="fas fa-book me-1"></i>
+                                README.md
+                            </a>
+                            <a href="#" class="btn btn-outline-warning btn-sm mb-2 w-100">
+                                <i class="fas fa-book me-1"></i>
+                                Migration Guide
+                            </a>
+                            <a href="#" class="btn btn-outline-warning btn-sm mb-2 w-100">
+                                <i class="fas fa-book me-1"></i>
+                                Correlation ID Guide
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                        <i class="fas fa-graduation-cap me-2"></i>
+                        Projeto de Estudo - Microserviços
+                    </h5>
+                    <p class="card-text">
+                        Este dashboard foi criado para demonstrar e documentar todos os aspectos técnicos 
+                        implementados no sistema de microserviços de e-commerce.
+                    </p>
+                    <p class="text-muted mb-0">
+                        <strong>Desenvolvedor:</strong> Wallyson Lopes - Sênior<br>
+                        <strong>Data:</strong> @DateTime.Now.ToString("dd/MM/yyyy HH:mm")
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.badge {
+    font-size: 0.75em;
+}
+
+.btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+}
+
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+</style>
