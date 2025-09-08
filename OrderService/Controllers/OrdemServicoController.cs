@@ -19,8 +19,10 @@ namespace OrderService.Controllers
             {
                 var guid = await _useCase.Executar(produtos);
 
-                _logger.LogInformation("Ordem de serviço gerada com sucesso. IDs gerados: {QuantidadeIds}", guid.Dados);
-                return Ok(guid);
+                if(guid == null) return BadRequest("Erro ao gerar ordem de serviço.");
+
+                _logger.LogInformation("Ordem de serviço gerada com sucesso. IDs gerados: {QuantidadeIds}", guid.Dados.Id);
+                return Ok(guid.Dados);
             }
             catch (Exception ex)
             {

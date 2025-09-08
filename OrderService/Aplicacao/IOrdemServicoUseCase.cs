@@ -3,7 +3,7 @@ using OrderService.Models;
 
 namespace OrderService.Aplicacao
 {
-    public interface IOrdemServicoUseCase : IUseCaseExecute<List<Produto>, Guid>
+    public interface IOrdemServicoUseCase : IUseCaseExecute<List<Produto>, OrderGeradaModel>
     {
     }
 }

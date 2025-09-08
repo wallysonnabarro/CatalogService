@@ -66,7 +66,7 @@ namespace Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    return Json(new { success = true, message = "Ordem de serviço gerada com sucesso!", orderId = result.Dados });
+                    return Json(new { success = true, message = "Ordem de serviço gerada com sucesso!", orderId = result.Dados.Id });
                 }
                 else
                 {

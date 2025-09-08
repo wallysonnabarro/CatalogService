@@ -5,6 +5,6 @@ namespace Web.Services
 {
     public interface IOrderService
     {
-        Task<Result<Guid>> GerarOrdemServico(List<ProdutoParaOrdem> produtos);
+        Task<Result<OrderGeradaModel>> GerarOrdemServico(List<ProdutoParaOrdem> produtos);
     }
 }

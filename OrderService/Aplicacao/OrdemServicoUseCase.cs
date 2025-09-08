@@ -7,14 +7,14 @@ namespace OrderService.Aplicacao
 {
     public class OrdemServicoUseCase(IOrdemServicoServices _ordemServicoServices, IOrdemServicoRepository _OrdemRepository) : IOrdemServicoUseCase
     {
-        public async Task<Result<Guid>> Executar(List<Produto> input)
+        public async Task<Result<OrderGeradaModel>> Executar(List<Produto> input)
         {
             try
             {
                 //Validar a lista de produtos na api CatalogService
                 var listaProdutosValidos = await _ordemServicoServices.ValidarListaProdutos(input.Select(p => p.ProdutoId).ToList());
 
-                if (listaProdutosValidos.Count == 0) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
+                if (listaProdutosValidos.Count == 0) return Result<OrderGeradaModel>.Failed(new Errors { Description = "Lista de produtos inválida" });
 
                 var novaLista = input.Where(x => listaProdutosValidos.Any(p => p.Id == x.ProdutoId))
                 .Select(x => new Produtos
@@ -26,7 +26,7 @@ namespace OrderService.Aplicacao
                 .OrderBy(x => x.ProdutoId)
                 .ToList();
 
-                if (novaLista.Count == 0) return Result<Guid>.Failed(new Errors { Description = "Lista de produtos inválida" });
+                if (novaLista.Count == 0) return Result<OrderGeradaModel>.Failed(new Errors { Description = "Lista de produtos inválida" });
 
                 var novaOrdem = new OrdermServico
                 {
@@ -42,11 +42,11 @@ namespace OrderService.Aplicacao
                 // Atualizar a quantidade dos produtos na api CatalogService
                 await _ordemServicoServices.AtualizarQuantidadeProdutos(input);
 
-                return Result<Guid>.Sucesso(id);
+                return Result<OrderGeradaModel>.Sucesso(new OrderGeradaModel { Id = id.ToString() });
             }
             catch (Exception e)
             {
-                return Result<Guid>.Failed(new Errors { Description = e.Message });
+                return Result<OrderGeradaModel>.Failed(new Errors { Description = e.Message });
             }
         }
     }

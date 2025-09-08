@@ -7,7 +7,7 @@ namespace Web.Services
 {
     public class OrderService(IHttpClientFactory httpClientFactory, ICorrelationLogger correlationLogger) : IOrderService
     {
-        public async Task<Result<Guid>> GerarOrdemServico(List<ProdutoParaOrdem> produtos)
+        public async Task<Result<OrderGeradaModel>> GerarOrdemServico(List<ProdutoParaOrdem> produtos)
         {
             correlationLogger.LogInformation("Gerando ordem de serviço para {Quantidade} produtos", produtos.Count);
 
@@ -24,25 +24,28 @@ namespace Web.Services
 
                 if (responseMessage.IsSuccessStatusCode)
                 {
-                    var result = JsonSerializer.Deserialize<Result<Guid>>(responseContent, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
+                    var result = JsonSerializer.Deserialize<OrderGeradaModel>(responseContent);
 
-                    correlationLogger.LogInformation("Ordem de serviço gerada com sucesso. ID: {OrderId}", result?.Dados);
-                    return result ?? Result<Guid>.Failed(new Errors { Description = "Resposta inválida" });
+                    if (result == null)
+                    {
+                        correlationLogger.LogError($"a requisição para {url}, retornou nulo.", "Resposta inválida.");
+                        return Result<OrderGeradaModel>.Failed(new Errors { Description = "Resposta inválida" });
+                    }
+
+                    correlationLogger.LogInformation($"Ordem de serviço gerada com sucesso. ID: {result.Id}");
+                    return Result<OrderGeradaModel>.Sucesso(result);
                 }
                 else
                 {
-                    correlationLogger.LogWarning("Falha ao gerar ordem de serviço. Status: {StatusCode}, Response: {Response}", 
+                    correlationLogger.LogWarning("Falha ao gerar ordem de serviço. Status: {StatusCode}, Response: {Response}",
                         responseMessage.StatusCode, responseContent);
-                    return Result<Guid>.Failed(new Errors { Description = $"Erro HTTP {responseMessage.StatusCode}: {responseContent}" });
+                    return Result<OrderGeradaModel>.Failed(new Errors { Description = $"Erro HTTP {responseMessage.StatusCode}: {responseContent}" });
                 }
             }
             catch (Exception e)
             {
                 correlationLogger.LogError(e, "Erro ao gerar ordem de serviço.");
-                return Result<Guid>.Failed(new Errors { Description = e.Message });
+                return Result<OrderGeradaModel>.Failed(new Errors { Description = e.Message });
             }
         }
     }
