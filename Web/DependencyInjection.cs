@@ -10,6 +10,7 @@ namespace Web
             Services.AddScoped<ICorrelationLogger, CorrelationLogger>();
             Services.AddScoped<ILoginServices, LoginServices>();
             Services.AddScoped<IUsuarioServices, UsuarioServices>();
+            Services.AddScoped<IProdutoServices, ProdutoServices>();
             Services.AddScoped<ValidarTokenFilter>();
 
             return Services;

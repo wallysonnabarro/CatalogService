@@ -31,6 +31,19 @@ builder.Services.AddHttpClient("webservices", client =>
     return handler;
 });
 
+// HttpClient para CatalogService
+builder.Services.AddHttpClient("catalogservices", client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["apis:catalog"]!);
+    client.DefaultRequestHeaders.Add("User-Agent", "catalogservices");
+})
+.ConfigurePrimaryHttpMessageHandler(() =>
+{
+    var handler = new HttpClientHandler();
+    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+    return handler;
+});
+
 builder.Services.AddAntiforgery(options => options.HeaderName = "XSRF-TOKEN");
 
 builder.Services.AddInfrastructure(builder.Configuration);
