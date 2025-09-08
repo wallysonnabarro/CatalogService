@@ -22,3 +22,4 @@ Write-Host "📊 API Gateway: http://localhost:5001" -ForegroundColor Cyan
 Write-Host "🔐 OAuth Services: http://localhost:5005" -ForegroundColor Cyan
 Write-Host "🐰 RabbitMQ Management: http://localhost:15672" -ForegroundColor Cyan
 
+
