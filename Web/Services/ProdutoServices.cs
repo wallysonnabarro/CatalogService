@@ -13,7 +13,7 @@ namespace Web.Services
 
             try
             {
-                using var client = httpClientFactory.CreateClient("catalogservices");
+                using var client = httpClientFactory.CreateClient("gatewayservices");
 
                 var jsonContent = JsonSerializer.Serialize(pageWrapper);
                 var url = "/catalog/produtos/produtos-paginado";
@@ -72,7 +72,7 @@ namespace Web.Services
 
             try
             {
-                using var client = httpClientFactory.CreateClient("catalogservices");
+                using var client = httpClientFactory.CreateClient("gatewayservices");
 
                 var jsonContent = JsonSerializer.Serialize(produto);
                 var url = "/catalog/produtos/adicionar-produto";
@@ -109,7 +109,7 @@ namespace Web.Services
 
             try
             {
-                using var client = httpClientFactory.CreateClient("catalogservices");
+                using var client = httpClientFactory.CreateClient("gatewayservices");
 
                 var url = $"/catalog/produtos/por-id/{id}";
 

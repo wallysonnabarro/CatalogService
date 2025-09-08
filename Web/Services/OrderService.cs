@@ -13,7 +13,7 @@ namespace Web.Services
 
             try
             {
-                using var client = httpClientFactory.CreateClient("orderservices");
+                using var client = httpClientFactory.CreateClient("gatewayservices");
                 var jsonContent = JsonSerializer.Serialize(produtos);
                 var url = "/orders/orderns/gerar-ordem";
 

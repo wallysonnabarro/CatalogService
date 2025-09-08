@@ -32,23 +32,10 @@ builder.Services.AddHttpClient("webservices", client =>
 });
 
 // HttpClient para CatalogService
-builder.Services.AddHttpClient("catalogservices", client =>
+builder.Services.AddHttpClient("gatewayservices", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["apis:catalog"]!);
-    client.DefaultRequestHeaders.Add("User-Agent", "catalogservices");
-})
-.ConfigurePrimaryHttpMessageHandler(() =>
-{
-    var handler = new HttpClientHandler();
-    handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-    return handler;
-});
-
-// HttpClient para OrderService
-builder.Services.AddHttpClient("orderservices", client =>
-{
-    client.BaseAddress = new Uri(builder.Configuration["apis:order"]!);
-    client.DefaultRequestHeaders.Add("User-Agent", "orderservices");
+    client.BaseAddress = new Uri(builder.Configuration["apis:gateway"]!);
+    client.DefaultRequestHeaders.Add("User-Agent", "gatewayservices");
 })
 .ConfigurePrimaryHttpMessageHandler(() =>
 {
