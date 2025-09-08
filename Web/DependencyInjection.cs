@@ -11,6 +11,7 @@ namespace Web
             Services.AddScoped<ILoginServices, LoginServices>();
             Services.AddScoped<IUsuarioServices, UsuarioServices>();
             Services.AddScoped<IProdutoServices, ProdutoServices>();
+            Services.AddScoped<IOrderService, OrderService>();
             Services.AddScoped<ValidarTokenFilter>();
 
             return Services;

@@ -1,0 +1,293 @@
+@model Web.Models.OrdemServicoViewModel
+
+@{
+    ViewData["Title"] = "Gerar Ordem de Serviço";
+    Layout = "~/Views/Shared/_LayoutLogado.cshtml";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Gerar Ordem de Serviço</h2>
+
+    <div class="row">
+        <!-- Seleção de Produtos -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Selecionar Produtos</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="produtoSearch" class="form-label">Buscar Produto:</label>
+                        <input type="text" id="produtoSearch" class="form-control" placeholder="Digite o nome do produto...">
+                        <div id="produtoResults" class="list-group mt-2" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista de Produtos Selecionados -->
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Produtos Selecionados</h5>
+                    <span class="badge bg-light text-dark" id="totalProdutos">0 produtos</span>
+                </div>
+                <div class="card-body">
+                    <div id="produtosSelecionados">
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-cart-plus fs-1"></i>
+                            <p class="mt-2">Nenhum produto selecionado</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 pt-3 border-top">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <strong>Total:</strong>
+                            <span class="fs-5 text-success" id="totalValor">R$ 0,00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botão de Gerar Ordem -->
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button type="button" id="gerarOrdemBtn" class="btn btn-primary btn-lg" disabled>
+                <i class="bi bi-check-circle me-2"></i>Gerar Ordem de Serviço
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirmar Ordem de Serviço</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Deseja gerar a ordem de serviço com os produtos selecionados?</p>
+                <div id="resumoOrdem"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmarOrdem">Confirmar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let produtosSelecionados = [];
+        let timeoutId;
+
+        // Buscar produtos
+        $('#produtoSearch').on('input', function() {
+            const termo = $(this).val();
+            
+            clearTimeout(timeoutId);
+            
+            if (termo.length < 2) {
+                $('#produtoResults').hide();
+                return;
+            }
+
+            timeoutId = setTimeout(() => {
+                buscarProdutos(termo);
+            }, 300);
+        });
+
+        function buscarProdutos(termo) {
+            $.get('/Ordens/BuscarProdutos', { termo: termo })
+                .done(function(produtos) {
+                    mostrarResultados(produtos);
+                })
+                .fail(function() {
+                    $('#produtoResults').html('<div class="list-group-item text-danger">Erro ao buscar produtos</div>').show();
+                });
+        }
+
+        function mostrarResultados(produtos) {
+            if (produtos.length === 0) {
+                $('#produtoResults').html('<div class="list-group-item text-muted">Nenhum produto encontrado</div>').show();
+                return;
+            }
+
+            let html = '';
+            produtos.forEach(produto => {
+                const jaSelecionado = produtosSelecionados.some(p => p.ProdutoId === produto.id);
+                const disabled = jaSelecionado ? 'disabled' : '';
+                const badgeClass = jaSelecionado ? 'bg-secondary' : 'bg-primary';
+                
+                html += `
+                    <div class="list-group-item list-group-item-action ${disabled}" data-produto='${JSON.stringify(produto)}' ${disabled ? '' : 'onclick="adicionarProduto(this)"'}>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">${produto.nome}</h6>
+                                <small class="text-muted">Estoque: ${produto.quantidadeEstoque}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge ${badgeClass}">R$ ${produto.valor.toFixed(2)}</span>
+                                ${jaSelecionado ? '<small class="text-muted d-block">Já selecionado</small>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            $('#produtoResults').html(html).show();
+        }
+
+        function adicionarProduto(elemento) {
+            const produto = JSON.parse($(elemento).attr('data-produto'));
+            
+            const produtoSelecionado = {
+                ProdutoId: produto.id,
+                Nome: produto.nome,
+                Valor: produto.valor,
+                Quantidade: 1,
+                QuantidadeEstoque: produto.quantidadeEstoque
+            };
+
+            produtosSelecionados.push(produtoSelecionado);
+            atualizarListaProdutos();
+            $('#produtoSearch').val('');
+            $('#produtoResults').hide();
+        }
+
+        function removerProduto(produtoId) {
+            produtosSelecionados = produtosSelecionados.filter(p => p.ProdutoId !== produtoId);
+            atualizarListaProdutos();
+        }
+
+        function atualizarQuantidade(produtoId, novaQuantidade) {
+            const produto = produtosSelecionados.find(p => p.ProdutoId === produtoId);
+            if (produto) {
+                produto.Quantidade = Math.max(1, Math.min(novaQuantidade, produto.QuantidadeEstoque));
+                atualizarListaProdutos();
+            }
+        }
+
+        function atualizarListaProdutos() {
+            const container = $('#produtosSelecionados');
+            
+            if (produtosSelecionados.length === 0) {
+                container.html(`
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-cart-plus fs-1"></i>
+                        <p class="mt-2">Nenhum produto selecionado</p>
+                    </div>
+                `);
+                $('#gerarOrdemBtn').prop('disabled', true);
+                $('#totalProdutos').text('0 produtos');
+                $('#totalValor').text('R$ 0,00');
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+
+            produtosSelecionados.forEach(produto => {
+                const subtotal = produto.Valor * produto.Quantidade;
+                total += subtotal;
+
+                html += `
+                    <div class="border rounded p-3 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <h6 class="mb-1">${produto.Nome}</h6>
+                                <small class="text-muted">R$ ${produto.Valor.toFixed(2)} cada</small>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-danger" onclick="removerProduto('${produto.ProdutoId}')">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-6">
+                                <label class="form-label small">Quantidade:</label>
+                                <input type="number" class="form-control form-control-sm" 
+                                       value="${produto.Quantidade}" 
+                                       min="1" 
+                                       max="${produto.QuantidadeEstoque}"
+                                       onchange="atualizarQuantidade('${produto.ProdutoId}', this.value)">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Subtotal:</label>
+                                <div class="form-control-plaintext fw-bold">R$ ${subtotal.toFixed(2)}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.html(html);
+            $('#gerarOrdemBtn').prop('disabled', false);
+            $('#totalProdutos').text(`${produtosSelecionados.length} produto${produtosSelecionados.length !== 1 ? 's' : ''}`);
+            $('#totalValor').text(`R$ ${total.toFixed(2)}`);
+        }
+
+        // Gerar ordem
+        $('#gerarOrdemBtn').click(function() {
+            mostrarModalConfirmacao();
+        });
+
+        function mostrarModalConfirmacao() {
+            let resumo = '<div class="table-responsive"><table class="table table-sm">';
+            resumo += '<thead><tr><th>Produto</th><th>Qtd</th><th>Valor</th><th>Subtotal</th></tr></thead><tbody>';
+            
+            let total = 0;
+            produtosSelecionados.forEach(produto => {
+                const subtotal = produto.Valor * produto.Quantidade;
+                total += subtotal;
+                resumo += `<tr><td>${produto.Nome}</td><td>${produto.Quantidade}</td><td>R$ ${produto.Valor.toFixed(2)}</td><td>R$ ${subtotal.toFixed(2)}</td></tr>`;
+            });
+            
+            resumo += '</tbody></table></div>';
+            resumo += `<div class="text-end"><strong>Total: R$ ${total.toFixed(2)}</strong></div>`;
+            
+            $('#resumoOrdem').html(resumo);
+            $('#confirmModal').modal('show');
+        }
+
+        $('#confirmarOrdem').click(function() {
+            const ordemData = {
+                ProdutosSelecionados: produtosSelecionados
+            };
+
+            $.ajax({
+                url: '/Ordens/GerarOrdem',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(ordemData),
+                success: function(response) {
+                    $('#confirmModal').modal('hide');
+                    
+                    if (response.success) {
+                        alert('Ordem de serviço gerada com sucesso! ID: ' + response.orderId);
+                        produtosSelecionados = [];
+                        atualizarListaProdutos();
+                        $('#produtoSearch').val('');
+                    } else {
+                        alert('Erro: ' + response.message);
+                    }
+                },
+                error: function() {
+                    $('#confirmModal').modal('hide');
+                    alert('Erro ao gerar ordem de serviço');
+                }
+            });
+        });
+
+        // Fechar resultados ao clicar fora
+        $(document).click(function(e) {
+            if (!$(e.target).closest('#produtoSearch, #produtoResults').length) {
+                $('#produtoResults').hide();
+            }
+        });
+    </script>
+}

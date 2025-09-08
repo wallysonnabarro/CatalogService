@@ -1,0 +1,10 @@
+using Web.Models;
+using Web.Models.Resultados;
+
+namespace Web.Services
+{
+    public interface IOrderService
+    {
+        Task<Result<Guid>> GerarOrdemServico(List<ProdutoParaOrdem> produtos);
+    }
+}
