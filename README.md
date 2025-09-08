@@ -159,6 +159,13 @@ O sistema simula um e-commerce onde:
 - **Queue:** `catalog` (Durable)
 - **Dead Letter Queue:** `dead_letters`
 
+## 🌐 **Demo Online**
+
+**🚀 Teste o projeto online sem instalação:**
+- **URL:** https://roadmap.dpess.com.br/
+- **Funcionalidades disponíveis:** Listagem de produtos, adição de novos produtos, autenticação
+- **Credenciais de teste:** Use o botão "Criar Usuário de Teste" na página inicial
+
 ## 🚀 **Como Executar**
 
 ### **Pré-requisitos**
