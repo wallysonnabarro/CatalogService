@@ -79,5 +79,50 @@ namespace Web.Controllers
                 return Json(new { success = false, message = "Erro interno do servidor" });
             }
         }
+
+        [HttpGet]
+        public async Task<IActionResult> Listar(int page = 1, int pageSize = 10)
+        {
+            try
+            {
+                var pageWrapper = new PageWrapper
+                {
+                    Page = page,
+                    PageSize = pageSize,
+                    Skip = (page - 1) * pageSize,
+                    Status = "Aberta"
+                };
+
+                var ordensPaginadas = await orderService.ListarOrdensPaginadasAsync(pageWrapper);
+                return View(ordensPaginadas);
+            }
+            catch (Exception ex)
+            {
+                correlationLogger.LogError(ex, "Erro ao buscar lista de ordens");
+                TempData["ErrorMessage"] = "Erro ao carregar lista de ordens.";
+                return View(new OrdensPaginadasViewModel());
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Detalhes(Guid id)
+        {
+            try
+            {
+                var ordem = await orderService.ObterOrdemPorIdAsync(id);
+                if (ordem == null)
+                {
+                    TempData["ErrorMessage"] = "Ordem não encontrada.";
+                    return RedirectToAction(nameof(Listar));
+                }
+                return View(ordem);
+            }
+            catch (Exception ex)
+            {
+                correlationLogger.LogError(ex, "Erro ao buscar detalhes da ordem {OrderId}", id);
+                TempData["ErrorMessage"] = "Erro ao carregar detalhes da ordem.";
+                return RedirectToAction(nameof(Listar));
+            }
+        }
     }
 }

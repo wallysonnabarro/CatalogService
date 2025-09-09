@@ -13,6 +13,7 @@ namespace OrderService
             Services.AddScoped<IOrdemServicoUseCase, OrdemServicoUseCase>();
             Services.AddScoped<IOrdemServicoServices, OrdemServicoServices>();
             Services.AddScoped<IOrdemServicoRepository, OrdemServicoRepository>();
+            Services.AddScoped<IOrderMappingService, OrderMappingService>();
             Services.AddScoped<IRabbitMqClient, RabbitMqClient>();
             return Services;
         }
