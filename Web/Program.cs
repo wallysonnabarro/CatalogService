@@ -3,6 +3,7 @@ using Web.Data;
 using Web.Services;
 using Web.Middleware;
 using Web;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -60,6 +61,12 @@ app.UseHttpsRedirection();
 
 app.UseCorrelationId();
 
+// Configurar métricas HTTP do Prometheus
+app.UseHttpMetrics(options =>
+{
+    options.AddCustomLabel("service", context => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "web-mvc");
+});
+
 app.UseRouting();
 
 app.UseAuthorization();
@@ -70,6 +77,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+app.MapMetrics(); // Endpoint /metrics - deve ser o último
 
 
 app.Run();

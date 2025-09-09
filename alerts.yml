@@ -1,0 +1,38 @@
+groups:
+- name: microservices
+  rules:
+  - alert: HighErrorRate
+    expr: rate(http_requests_errors_total[5m]) > 0.1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Alta taxa de erro no serviço"
+      description: "Taxa de erro acima de 10% nos últimos 5 minutos"
+      
+  - alert: HighResponseTime
+    expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 1
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Tempo de resposta alto"
+      description: "95% das requisições estão levando mais de 1 segundo"
+      
+  - alert: ServiceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Serviço indisponível"
+      description: "O serviço {{ $labels.job }} está fora do ar"
+      
+  - alert: HighMemoryUsage
+    expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.8
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Alto uso de memória"
+      description: "Uso de memória acima de 80%"

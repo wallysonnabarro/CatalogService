@@ -47,6 +47,12 @@ scrape_configs:
       - targets: ['apigateway:80']
     metrics_path: '/metrics'
     scrape_interval: 10s
+
+  - job_name: 'web-mvc'
+    static_configs:
+      - targets: ['webservices:80']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
 ```
 
 ## 2. Configuração do Grafana
@@ -129,7 +135,7 @@ var app = builder.Build();
 // Configurar métricas HTTP
 app.UseHttpMetrics(options =>
 {
-    options.AddCustomLabel(new HttpCustomLabel("service", () => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "catalog-service")); // Nome do seu serviço
+    options.AddCustomLabel("service", context => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "catalog-service"); // Nome do seu serviço
 });
 
 app.UseRouting();
@@ -317,7 +323,9 @@ docker-compose logs grafana
 ### Passo 10: Acessar as interfaces
 
 - **Prometheus**: http://localhost:9090
-- **Grafana**: http://localhost:3000 (admin/admin123)
+- **Grafana**: http://localhost:3000 
+  - **Usuário**: admin
+  - **Senha**: admin123
 - **Node Exporter**: http://localhost:9100/metrics
 
 ### Passo 11: Verificar métricas dos microserviços
@@ -327,6 +335,7 @@ Acesse os endpoints de métricas de cada serviço:
 - http://localhost:5002/metrics (OrderService)
 - http://localhost:5003/metrics (OAuthService)
 - http://localhost:5004/metrics (ApiGateway)
+- http://localhost:5002/metrics (Web MVC)
 
 ## 7. Próximos Passos
 
@@ -355,7 +364,10 @@ CatalogService/
 ├── OAuthServices/
 │   ├── Program.cs (atualizado)
 │   └── Controllers/ (com métricas)
-└── ApiGateway/
+├── ApiGateway/
+│   ├── Program.cs (atualizado)
+│   └── Controllers/ (com métricas)
+└── Web/
     ├── Program.cs (atualizado)
     └── Controllers/ (com métricas)
 ```
@@ -368,12 +380,12 @@ CatalogService/
    - **Solução**: Esses métodos/propriedades não existem na biblioteca `prometheus-net`
    - Use apenas `app.UseHttpMetrics()` e `app.MapMetrics()`
    - As métricas são criadas automaticamente
-   - Para labels customizados, use `new HttpCustomLabel("nome", () => "valor")` dentro de `AddCustomLabel()`
+   - Para labels customizados, use `options.AddCustomLabel("nome", context => "valor")` diretamente
 
 2. **Erro com AddCustomLabel**
-   - **Solução**: Use `new HttpCustomLabel("nome", () => "valor")` como parâmetro
-   - O delegate não recebe argumentos: `() => "valor"` (não `(arg) => "valor"`)
-   - Exemplo: `options.AddCustomLabel(new HttpCustomLabel("service", () => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "catalog-service"));`
+   - **Solução**: Use `options.AddCustomLabel("nome", context => "valor")` diretamente
+   - O delegate recebe HttpContext: `context => "valor"` (não `() => "valor"`)
+   - Exemplo: `options.AddCustomLabel("service", context => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "catalog-service");`
 
 3. **Métricas não aparecem no Prometheus**
    - Verifique se o endpoint `/metrics` está acessível

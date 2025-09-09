@@ -7,6 +7,7 @@ using OAuthServices.Middleware;
 using OAuthServices.Services;
 using System.Reflection;
 using System.Text;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -88,10 +89,20 @@ app.UseHttpsRedirection();
 // Adiciona o middleware de Correlation ID no início do pipeline
 app.UseCorrelationId();
 
+// Configurar métricas HTTP do Prometheus
+app.UseHttpMetrics(options =>
+{
+    options.AddCustomLabel("service", context => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "oauth-service");
+});
+
+app.UseRouting();
+
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapMetrics(); // Endpoint /metrics - deve ser o último
 
 app.Run();
 

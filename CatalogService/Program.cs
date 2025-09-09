@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using OrderService;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,7 +55,17 @@ app.UseHttpsRedirection();
 // Adiciona o middleware de Correlation ID no início do pipeline
 app.UseCorrelationId();
 
+// Configurar métricas HTTP do Prometheus
+app.UseHttpMetrics(options =>
+{
+    options.AddCustomLabel("service", context => Environment.GetEnvironmentVariable("SERVICE_NAME") ?? "catalog-service");
+});
+
+app.UseRouting();
+
 app.MapControllers();
+
+app.MapMetrics(); // Endpoint /metrics - deve ser o último
 
 app.Run();
 
