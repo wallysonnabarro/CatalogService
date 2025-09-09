@@ -250,6 +250,72 @@ graph TD
 - Monitoramento de dependências
 - Alertas de falhas
 
+### **🔍 Prometheus + Grafana + Node Exporter**
+
+O sistema inclui monitoramento completo com métricas em tempo real:
+
+#### **Prometheus Server**
+- **Porta:** 9090
+- **URL:** http://localhost:9090
+- **Função:** Coleta e armazena métricas dos microserviços
+- **Configuração:** `prometheus.yml`
+
+#### **Grafana Dashboard**
+- **Porta:** 3000
+- **URL:** http://localhost:3000
+- **Credenciais:** admin / admin123
+- **Função:** Visualização de métricas e criação de dashboards
+- **Datasource:** Prometheus (configurado automaticamente)
+
+#### **Node Exporter**
+- **Porta:** 9100
+- **URL:** http://localhost:9100/metrics
+- **Função:** Métricas do sistema operacional (CPU, memória, disco)
+
+#### **Métricas dos Microserviços**
+Todos os serviços expõem métricas no endpoint `/metrics`:
+
+- **ApiGateway:** http://localhost:5000/metrics
+- **Web MVC:** http://localhost:5002/metrics
+- **OAuthServices:** http://localhost:5004/metrics
+
+#### **Métricas Disponíveis**
+- **HTTP Requests:** Total, duração, status codes
+- **Performance:** Tempo de resposta, throughput
+- **Sistema:** CPU, memória, threads, GC
+- **Entity Framework:** Queries, SaveChanges, conexões
+- **Custom Labels:** Identificação por serviço
+
+#### **Queries Prometheus Úteis**
+```promql
+# Taxa de requisições por segundo
+rate(http_requests_received_total[5m])
+
+# 95º percentil de duração
+histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))
+
+# Requisições por controller
+sum(http_requests_received_total) by (controller)
+
+# Uso de memória
+process_working_set_bytes / 1024 / 1024
+
+# Requisições com erro
+sum(http_requests_received_total{code=~"4..|5.."}) by (service)
+```
+
+#### **Como Usar**
+1. **Acesse o Prometheus:** http://localhost:9090
+2. **Execute queries** na aba "Graph"
+3. **Acesse o Grafana:** http://localhost:3000
+4. **Crie dashboards** para visualizar métricas
+5. **Configure alertas** para monitoramento proativo
+
+#### **Arquivos de Configuração**
+- `prometheus.yml` - Configuração do Prometheus
+- `grafana-datasources.yml` - Datasource do Grafana
+- `alerts.yml` - Regras de alertas
+
 ## 🛠️ **Tecnologias Utilizadas**
 
 - **Backend:** ASP.NET Core 9.0, .NET 9.0
@@ -260,6 +326,8 @@ graph TD
 - **Autenticação:** JWT Bearer
 - **Logging:** Serilog, Database Logging
 - **Frontend:** Bootstrap 5, jQuery
+- **Monitoramento:** Prometheus, Grafana, Node Exporter
+- **Métricas:** prometheus-net, prometheus-net.AspNetCore
 
 ## 📈 **Benefícios da Arquitetura**
 
@@ -340,6 +408,9 @@ docker container prune
 - **API Gateway**: http://localhost:5000
 - **OAuth Services**: http://localhost:5004
 - **RabbitMQ Management**: http://localhost:15672
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (admin/admin123)
+- **Node Exporter**: http://localhost:9100/metrics
 
 #### **Bancos de Dados**
 - **SQL1 (OrderService)**: localhost:14333
@@ -784,10 +855,11 @@ A arquitetura implementada fornece uma base sólida para sistemas de e-commerce 
 
 ### **Próximos Passos Sugeridos:**
 - Implementação de circuit breakers
-- Adição de métricas e monitoramento (Prometheus/Grafana)
 - Implementação de cache distribuído (Redis)
 - Adição de testes de integração
 - Implementação de CI/CD pipeline
+- Configuração de alertas avançados no Grafana
+- Implementação de distributed tracing (Jaeger/Zipkin)
 
 ---
 

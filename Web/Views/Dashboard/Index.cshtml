@@ -32,18 +32,102 @@
                     </h3>
                 </div>
                 <div class="card-body">
+                    <!-- Diagrama Visual da Arquitetura -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-center mb-4">🏗️ Arquitetura Visual dos Microserviços</h5>
+                            <div class="architecture-diagram">
+                                <div class="row text-center">
+                                    <!-- Cliente -->
+                                    <div class="col-12 mb-3">
+                                        <div class="service-box client-box">
+                                            <i class="fas fa-user fa-2x mb-2"></i>
+                                            <h6>Cliente</h6>
+                                            <small>Usuário Final</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Serviços Diretos -->
+                                    <div class="col-md-4 mb-3">
+                                        <div class="service-box auth-box">
+                                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                                            <h6>OAuth Services</h6>
+                                            <small>Porta: 5004 (Direto)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="service-box web-box">
+                                            <i class="fas fa-globe fa-2x mb-2"></i>
+                                            <h6>Web MVC</h6>
+                                            <small>Porta: 5002 (Direto)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="service-box gateway-box">
+                                            <i class="fas fa-network-wired fa-2x mb-2"></i>
+                                            <h6>API Gateway</h6>
+                                            <small>Porta: 5000</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Microserviços atrás do Gateway -->
+                                    <div class="col-12 mb-3">
+                                        <div class="service-box gateway-box">
+                                            <i class="fas fa-network-wired fa-2x mb-2"></i>
+                                            <h6>API Gateway</h6>
+                                            <small>Roteia para:</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <div class="service-box catalog-box">
+                                            <i class="fas fa-box fa-2x mb-2"></i>
+                                            <h6>Catalog Service</h6>
+                                            <small>Porta: 8080 (via Gateway)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="service-box order-box">
+                                            <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                            <h6>Order Service</h6>
+                                            <small>Porta: 8080 (via Gateway)</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- RabbitMQ -->
+                                    <div class="col-12 mb-3">
+                                        <div class="service-box rabbitmq-box">
+                                            <i class="fas fa-exchange-alt fa-2x mb-2"></i>
+                                            <h6>RabbitMQ</h6>
+                                            <small>Message Broker</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Worker -->
+                                    <div class="col-12 mb-3">
+                                        <div class="service-box worker-box">
+                                            <i class="fas fa-cogs fa-2x mb-2"></i>
+                                            <h6>Worker Catalog</h6>
+                                            <small>Background Service</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-md-6">
                             <h5>🎯 Objetivo do Projeto</h5>
                             <p>Implementação de uma arquitetura de microserviços para um sistema de e-commerce, demonstrando conceitos modernos de desenvolvimento distribuído, comunicação assíncrona e gerenciamento de dados.</p>
                             
-                            <h5>🏗️ Cenário de Negócio</h5>
+                            <h5>🏗️ Arquitetura de Acesso</h5>
                             <ul>
-                                <li>Clientes fazem pedidos através de uma API</li>
-                                <li>Sistema valida produtos no catálogo</li>
-                                <li>Pedidos são processados e estoque é atualizado</li>
-                                <li>Eventos são processados de forma assíncrona</li>
-                                <li>Logs são centralizados para monitoramento</li>
+                                <li><strong>OAuth Services (5004):</strong> Acesso direto para autenticação</li>
+                                <li><strong>Web MVC (5002):</strong> Interface web com acesso direto</li>
+                                <li><strong>API Gateway (5000):</strong> Roteia para Catalog e Order Services</li>
+                                <li><strong>Catalog/Order Services:</strong> Acessados via API Gateway</li>
+                                <li><strong>RabbitMQ:</strong> Comunicação assíncrona entre serviços</li>
                             </ul>
                         </div>
                         <div class="col-md-6">
@@ -54,6 +138,7 @@
                                 <li><strong>Manutenibilidade:</strong> Código organizado por domínio</li>
                                 <li><strong>Testabilidade:</strong> Serviços podem ser testados isoladamente</li>
                                 <li><strong>Deploy Independente:</strong> Cada serviço pode ser atualizado separadamente</li>
+                                <li><strong>Acesso Híbrido:</strong> Alguns serviços diretos, outros via gateway</li>
                             </ul>
                         </div>
                     </div>
@@ -425,6 +510,313 @@
                                     <span class="badge bg-success me-1 mb-1">Docker Compose</span>
                                     <span class="badge bg-success me-1 mb-1">SQL Server 2022</span>
                                     <span class="badge bg-success me-1 mb-1">RabbitMQ 3.x</span>
+                                    <span class="badge bg-warning me-1 mb-1">Prometheus</span>
+                                    <span class="badge bg-info me-1 mb-1">Grafana</span>
+                                    <span class="badge bg-success me-1 mb-1">Node Exporter</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monitoramento -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Sistema de Monitoramento - Prometheus + Grafana
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-warning">
+                                <div class="card-header bg-warning text-dark">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-database me-2"></i>
+                                        Prometheus Server
+                                    </h5>
+                                    <small>Porta: 9090</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Função:</h6>
+                                    <p>Coleta e armazena métricas dos microserviços</p>
+                                    
+                                    <h6>Recursos:</h6>
+                                    <ul>
+                                        <li>Coleta automática de métricas</li>
+                                        <li>Armazenamento de séries temporais</li>
+                                        <li>PromQL para consultas</li>
+                                        <li>Alertas configuráveis</li>
+                                    </ul>
+                                    
+                                    <h6>Acesso:</h6>
+                                    <a href="http://localhost:9090" target="_blank" class="btn btn-warning btn-sm w-100">
+                                        <i class="fas fa-external-link-alt me-1"></i>
+                                        Prometheus UI
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100 border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-chart-bar me-2"></i>
+                                        Grafana Dashboard
+                                    </h5>
+                                    <small>Porta: 3000</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Função:</h6>
+                                    <p>Visualização de métricas e criação de dashboards</p>
+                                    
+                                    <h6>Recursos:</h6>
+                                    <ul>
+                                        <li>Dashboards interativos</li>
+                                        <li>Gráficos em tempo real</li>
+                                        <li>Alertas visuais</li>
+                                        <li>Datasource Prometheus</li>
+                                    </ul>
+                                    
+                                    <h6>Credenciais:</h6>
+                                    <p><strong>Usuário:</strong> admin<br><strong>Senha:</strong> admin123</p>
+                                    
+                                    <h6>Acesso:</h6>
+                                    <a href="http://localhost:3000" target="_blank" class="btn btn-info btn-sm w-100">
+                                        <i class="fas fa-external-link-alt me-1"></i>
+                                        Grafana Dashboard
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h5 class="mb-0">
+                                        <i class="fas fa-server me-2"></i>
+                                        Node Exporter
+                                    </h5>
+                                    <small>Porta: 9100</small>
+                                </div>
+                                <div class="card-body">
+                                    <h6>Função:</h6>
+                                    <p>Métricas do sistema operacional</p>
+                                    
+                                    <h6>Métricas:</h6>
+                                    <ul>
+                                        <li>CPU e memória</li>
+                                        <li>Uso de disco</li>
+                                        <li>Rede e processos</li>
+                                        <li>Arquivos abertos</li>
+                                    </ul>
+                                    
+                                    <h6>Endpoint:</h6>
+                                    <p><code>/metrics</code></p>
+                                    
+                                    <h6>Acesso:</h6>
+                                    <a href="http://localhost:9100/metrics" target="_blank" class="btn btn-success btn-sm w-100">
+                                        <i class="fas fa-external-link-alt me-1"></i>
+                                        Node Exporter
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5>📊 Métricas dos Microserviços</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Serviço</th>
+                                            <th>Endpoint</th>
+                                            <th>Porta</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><span class="badge bg-primary">ApiGateway</span></td>
+                                            <td><code>/metrics</code></td>
+                                            <td>5000</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-dark">Web MVC</span></td>
+                                            <td><code>/metrics</code></td>
+                                            <td>5002</td>
+                                        </tr>
+                                        <tr>
+                                            <td><span class="badge bg-danger">OAuthServices</span></td>
+                                            <td><code>/metrics</code></td>
+                                            <td>5004</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>🔍 Queries Prometheus Úteis</h5>
+                            <div class="bg-light p-3 rounded">
+                                <h6>Taxa de requisições:</h6>
+                                <code>rate(http_requests_received_total[5m])</code>
+                                
+                                <h6 class="mt-3">95º percentil de duração:</h6>
+                                <code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m]))</code>
+                                
+                                <h6 class="mt-3">Requisições por controller:</h6>
+                                <code>sum(http_requests_received_total) by (controller)</code>
+                                
+                                <h6 class="mt-3">Uso de memória (MB):</h6>
+                                <code>process_working_set_bytes / 1024 / 1024</code>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Diagrama Visual do Sistema de Monitoramento -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="text-center mb-4">📊 Arquitetura Visual do Sistema de Monitoramento</h5>
+                            <div class="monitoring-diagram">
+                                <div class="row text-center">
+                                    <!-- Microserviços -->
+                                    <div class="col-md-2 mb-3">
+                                        <div class="monitoring-step microservice-step">
+                                            <i class="fas fa-server fa-2x mb-2"></i>
+                                            <h6>Microserviços</h6>
+                                            <small>Expoem /metrics</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-warning"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="monitoring-step prometheus-step">
+                                            <i class="fas fa-database fa-2x mb-2"></i>
+                                            <h6>Prometheus</h6>
+                                            <small>Coleta métricas</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-info"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="monitoring-step grafana-step">
+                                            <i class="fas fa-chart-bar fa-2x mb-2"></i>
+                                            <h6>Grafana</h6>
+                                            <small>Visualiza dados</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="monitoring-step node-step">
+                                            <i class="fas fa-desktop fa-2x mb-2"></i>
+                                            <h6>Node Exporter</h6>
+                                            <small>Métricas do SO</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Tipos de Métricas -->
+                                <div class="row text-center mt-4">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-type http-metrics">
+                                            <i class="fas fa-globe fa-2x mb-2"></i>
+                                            <h6>HTTP Metrics</h6>
+                                            <ul class="list-unstyled">
+                                                <li>• Requisições</li>
+                                                <li>• Duração</li>
+                                                <li>• Status Codes</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-type system-metrics">
+                                            <i class="fas fa-microchip fa-2x mb-2"></i>
+                                            <h6>System Metrics</h6>
+                                            <ul class="list-unstyled">
+                                                <li>• CPU/Memória</li>
+                                                <li>• Threads</li>
+                                                <li>• GC</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-type ef-metrics">
+                                            <i class="fas fa-database fa-2x mb-2"></i>
+                                            <h6>EF Metrics</h6>
+                                            <ul class="list-unstyled">
+                                                <li>• Queries</li>
+                                                <li>• SaveChanges</li>
+                                                <li>• Conexões</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="metric-type custom-metrics">
+                                            <i class="fas fa-cog fa-2x mb-2"></i>
+                                            <h6>Custom Metrics</h6>
+                                            <ul class="list-unstyled">
+                                                <li>• Business Logic</li>
+                                                <li>• Performance</li>
+                                                <li>• Health Checks</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5>📈 Tipos de Métricas Disponíveis</h5>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6>HTTP Requests</h6>
+                                    <ul>
+                                        <li>Total de requisições</li>
+                                        <li>Duração das requisições</li>
+                                        <li>Status codes</li>
+                                        <li>Requisições em progresso</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Performance</h6>
+                                    <ul>
+                                        <li>Tempo de resposta</li>
+                                        <li>Throughput</li>
+                                        <li>Latência</li>
+                                        <li>Percentis</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Sistema</h6>
+                                    <ul>
+                                        <li>CPU e memória</li>
+                                        <li>Threads e GC</li>
+                                        <li>Handles abertos</li>
+                                        <li>Tempo de execução</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6>Entity Framework</h6>
+                                    <ul>
+                                        <li>Queries executadas</li>
+                                        <li>SaveChanges</li>
+                                        <li>Conexões ativas</li>
+                                        <li>Cache hits/misses</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -445,31 +837,227 @@
                     </h3>
                 </div>
                 <div class="card-body">
+                    <!-- Fluxo Visual de Pedidos -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-center mb-4">🔄 Fluxo Visual de Processamento de Pedidos</h5>
+                            <div class="flow-diagram">
+                                <div class="row text-center">
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-1">
+                                            <i class="fas fa-user fa-2x mb-2"></i>
+                                            <h6>1. Cliente</h6>
+                                            <small>Faz pedido</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-2">
+                                            <i class="fas fa-globe fa-2x mb-2"></i>
+                                            <h6>2. Web MVC</h6>
+                                            <small>Porta: 5002</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-3">
+                                            <i class="fas fa-network-wired fa-2x mb-2"></i>
+                                            <h6>3. API Gateway</h6>
+                                            <small>Porta: 5000</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-primary"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-4">
+                                            <i class="fas fa-shopping-cart fa-2x mb-2"></i>
+                                            <h6>4. Order Service</h6>
+                                            <small>Porta: 8080</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mt-3">
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-5">
+                                            <i class="fas fa-box fa-2x mb-2"></i>
+                                            <h6>5. Catalog Service</h6>
+                                            <small>Valida produtos</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-6">
+                                            <i class="fas fa-database fa-2x mb-2"></i>
+                                            <h6>6. SQL Server</h6>
+                                            <small>Salva pedido</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-7">
+                                            <i class="fas fa-exchange-alt fa-2x mb-2"></i>
+                                            <h6>7. RabbitMQ</h6>
+                                            <small>Publica evento</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-8">
+                                            <i class="fas fa-cogs fa-2x mb-2"></i>
+                                            <h6>8. Worker</h6>
+                                            <small>Consome evento</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mt-3">
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-9">
+                                            <i class="fas fa-box fa-2x mb-2"></i>
+                                            <h6>9. Catalog Service</h6>
+                                            <small>Atualiza estoque</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-success"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step step-10">
+                                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                            <h6>10. Pedido Concluído</h6>
+                                            <small>Estoque atualizado</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Fluxo Visual de Autenticação -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5 class="text-center mb-4">🔐 Fluxo Visual de Autenticação (Acesso Direto)</h5>
+                            <div class="auth-flow-diagram">
+                                <div class="row text-center">
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step auth-step-1">
+                                            <i class="fas fa-globe fa-2x mb-2"></i>
+                                            <h6>1. Web App</h6>
+                                            <small>Porta: 5002</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-danger"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step auth-step-2">
+                                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                                            <h6>2. OAuth Services</h6>
+                                            <small>Porta: 5004 (Direto)</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-danger"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step auth-step-3">
+                                            <i class="fas fa-key fa-2x mb-2"></i>
+                                            <h6>3. JWT Token</h6>
+                                            <small>Gera token</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 d-flex align-items-center justify-content-center">
+                                        <i class="fas fa-arrow-right fa-2x text-danger"></i>
+                                    </div>
+                                    <div class="col-md-2 mb-3">
+                                        <div class="flow-step auth-step-4">
+                                            <i class="fas fa-cookie-bite fa-2x mb-2"></i>
+                                            <h6>4. Cookies</h6>
+                                            <small>Armazena token</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mt-3">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="flow-step auth-step-5">
+                                            <i class="fas fa-filter fa-2x mb-2"></i>
+                                            <h6>5. ValidarTokenFilter</h6>
+                                            <small>Valida token em cada requisição</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="flow-step auth-step-6">
+                                            <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                            <h6>6. Acesso Autorizado</h6>
+                                            <small>Permite acesso aos recursos</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="flow-step auth-step-7">
+                                            <i class="fas fa-sync-alt fa-2x mb-2"></i>
+                                            <h6>7. Refresh Token</h6>
+                                            <small>Renova token automaticamente</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row text-center mt-3">
+                                    <div class="col-12">
+                                        <div class="alert alert-info">
+                                            <i class="fas fa-info-circle me-2"></i>
+                                            <strong>Nota:</strong> Web MVC e OAuth Services têm acesso direto (não passam pelo API Gateway)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <div class="col-md-8">
-                            <h5>🔄 Fluxo de Processamento de Pedidos</h5>
+                            <h5>📋 Detalhes do Fluxo de Pedidos</h5>
                             <div class="bg-light p-3 rounded">
                                 <ol>
-                                    <li><strong>Cliente</strong> faz requisição para <strong>API Gateway</strong></li>
-                                    <li><strong>API Gateway</strong> roteia para <strong>OrderService</strong></li>
+                                    <li><strong>Cliente</strong> faz pedido na <strong>Web MVC (5002)</strong></li>
+                                    <li><strong>Web MVC</strong> envia requisição para <strong>API Gateway (5000)</strong></li>
+                                    <li><strong>API Gateway</strong> roteia para <strong>OrderService (8080)</strong></li>
                                     <li><strong>OrderService</strong> valida produtos no <strong>CatalogService</strong></li>
                                     <li><strong>OrderService</strong> cria pedido no banco (sql1)</li>
                                     <li><strong>OrderService</strong> publica evento no <strong>RabbitMQ</strong></li>
                                     <li><strong>WorkerCatalog</strong> consome mensagem da fila</li>
                                     <li><strong>WorkerCatalog</strong> atualiza estoque no <strong>CatalogService</strong></li>
                                 </ol>
+                                <div class="alert alert-info mt-2">
+                                    <small><strong>Nota:</strong> Web MVC atua como intermediário entre o cliente e o API Gateway</small>
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
-                            <h5>🔐 Fluxo de Autenticação</h5>
+                            <h5>🔐 Detalhes da Autenticação</h5>
                             <div class="bg-light p-3 rounded">
                                 <ol>
-                                    <li><strong>Web App</strong> envia credenciais para <strong>OAuthServices</strong></li>
+                                    <li><strong>Web App (5002)</strong> envia credenciais diretamente para <strong>OAuthServices (5004)</strong></li>
                                     <li><strong>OAuthServices</strong> valida e gera JWT</li>
                                     <li><strong>OAuthServices</strong> retorna token + cookies</li>
                                     <li><strong>Web App</strong> armazena cookies</li>
                                     <li><strong>ValidarTokenFilter</strong> valida token em cada requisição</li>
                                 </ol>
+                                <div class="alert alert-warning mt-2">
+                                    <small><strong>Nota:</strong> Comunicação direta entre Web MVC e OAuth Services (sem API Gateway)</small>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -521,6 +1109,9 @@
                                 <li><strong>Health Checks:</strong> Monitoramento de saúde</li>
                                 <li><strong>Error Handling:</strong> Tratamento centralizado</li>
                                 <li><strong>Request/Response Logging:</strong> Auditoria completa</li>
+                                <li><strong>Prometheus Metrics:</strong> Métricas em tempo real</li>
+                                <li><strong>Grafana Dashboards:</strong> Visualização de dados</li>
+                                <li><strong>Node Exporter:</strong> Métricas do sistema</li>
                             </ul>
                         </div>
                     </div>
@@ -616,6 +1207,14 @@ dotnet ef database update --context ContextDb</code></pre>
                         </div>
                         <div class="col-md-3">
                             <h6>📊 Monitoramento</h6>
+                            <a href="http://localhost:9090" target="_blank" class="btn btn-outline-warning btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Prometheus
+                            </a>
+                            <a href="http://localhost:3000" target="_blank" class="btn btn-outline-info btn-sm mb-2 w-100">
+                                <i class="fas fa-external-link-alt me-1"></i>
+                                Grafana
+                            </a>
                             <a href="http://localhost:15672" target="_blank" class="btn btn-outline-success btn-sm mb-2 w-100">
                                 <i class="fas fa-external-link-alt me-1"></i>
                                 RabbitMQ Management
@@ -713,5 +1312,174 @@ dotnet ef database update --context ContextDb</code></pre>
 
 .bg-light {
     background-color: #f8f9fa !important;
+}
+
+/* Estilos para Diagramas Visuais */
+.architecture-diagram, .flow-diagram, .auth-flow-diagram, .monitoring-diagram {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.service-box, .flow-step, .monitoring-step {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.service-box:hover, .flow-step:hover, .monitoring-step:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Cores dos Serviços */
+.client-box {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-color: #2196f3;
+}
+
+.gateway-box {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+    border-color: #9c27b0;
+}
+
+.auth-box {
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+    border-color: #f44336;
+}
+
+.catalog-box {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+    border-color: #ff9800;
+}
+
+.order-box {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+}
+
+.web-box {
+    background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+    border-color: #8bc34a;
+}
+
+.rabbitmq-box {
+    background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%);
+    border-color: #e91e63;
+}
+
+.worker-box {
+    background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
+    border-color: #009688;
+}
+
+/* Cores dos Passos do Fluxo */
+.step-1, .auth-step-1 { background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); border-color: #2196f3; }
+.step-2, .auth-step-2 { background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%); border-color: #8bc34a; }
+.step-3, .auth-step-3 { background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%); border-color: #9c27b0; }
+.step-4, .auth-step-4 { background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); border-color: #4caf50; }
+.step-5, .auth-step-5 { background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); border-color: #ff9800; }
+.step-6, .auth-step-6 { background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%); border-color: #009688; }
+.step-7, .auth-step-7 { background: linear-gradient(135deg, #fce4ec 0%, #f8bbd9 100%); border-color: #e91e63; }
+.step-8 { background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%); border-color: #8bc34a; }
+.step-9 { background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%); border-color: #ff9800; }
+.step-10 { background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%); border-color: #4caf50; }
+
+/* Cores do Monitoramento */
+.microservice-step {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-color: #2196f3;
+}
+
+.prometheus-step {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+    border-color: #ff9800;
+}
+
+.grafana-step {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+}
+
+.node-step {
+    background: linear-gradient(135deg, #f1f8e9 0%, #dcedc8 100%);
+    border-color: #8bc34a;
+}
+
+/* Tipos de Métricas */
+.metric-type {
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.metric-type:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.http-metrics {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-color: #2196f3;
+}
+
+.system-metrics {
+    background: linear-gradient(135deg, #fff3e0 0%, #ffcc02 100%);
+    border-color: #ff9800;
+}
+
+.ef-metrics {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    border-color: #4caf50;
+}
+
+.custom-metrics {
+    background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+    border-color: #9c27b0;
+}
+
+/* Animações */
+@@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.service-box:hover, .flow-step:hover, .monitoring-step:hover {
+    animation: pulse 0.6s ease-in-out;
+}
+
+/* Setas animadas */
+.fa-arrow-right {
+    animation: slideRight 2s ease-in-out infinite;
+}
+
+@@keyframes slideRight {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+}
+
+/* Responsividade */
+@@media (max-width: 768px) {
+    .architecture-diagram, .flow-diagram, .auth-flow-diagram, .monitoring-diagram {
+        padding: 10px;
+    }
+    
+    .service-box, .flow-step, .monitoring-step {
+        padding: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .fa-arrow-right {
+        transform: rotate(90deg);
+    }
 }
 </style>
