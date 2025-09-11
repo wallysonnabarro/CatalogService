@@ -2,18 +2,19 @@
 using RabbitMQ.Client.Events;
 using System.Text;
 
-namespace WorkerCatalog.Services
+namespace WorkerOrdem.Services
 {
-    public class RabbitMqClient : IRabbitMqClient
+    public class RabbitMqReverterOrdem : IRabbitMqReverterOrdem
     {
+
         private readonly IConfiguration _config;
         private readonly IProcessarEvento _processarEvento;
-        private readonly ILogger<RabbitMqClient> _logger;
+        private readonly ILogger<RabbitMqReverterOrdem> _logger;
         private IConnection? _connection;
         private IChannel? _channel;
         private bool _isConnected = false;
 
-        public RabbitMqClient(IConfiguration config, IProcessarEvento processarEvento, ILogger<RabbitMqClient> logger)
+        public RabbitMqReverterOrdem(IConfiguration config, IProcessarEvento processarEvento, ILogger<RabbitMqReverterOrdem> logger)
         {
             _config = config;
             _processarEvento = processarEvento;
@@ -33,7 +34,7 @@ namespace WorkerCatalog.Services
 
             try
             {
-                _logger.LogInformation("Iniciando conexão com RabbitMQ - Host: {Host}:{Port}", 
+                _logger.LogInformation("Iniciando conexão com RabbitMQ - Host: {Host}:{Port}",
                     _config["RabbitMQ:Host"], _config["RabbitMQ:Port"]);
 
                 var factory = new ConnectionFactory
@@ -53,19 +54,19 @@ namespace WorkerCatalog.Services
                 var arguments = new Dictionary<string, object>
                 {
                     { "x-dead-letter-exchange", "dead_letters" },
-                    { "x-dead-letter-routing-key", "catalog.dlx" },
+                    { "x-dead-letter-routing-key", "ordem.dlx" },
                     { "x-max-length", 100 }
                 };
 
                 // Declarar exchange nomeado primeiro
                 await _channel.ExchangeDeclareAsync(
-                    exchange: "catalog_exchange",
+                    exchange: "ordem_exchange",
                     type: ExchangeType.Direct,
                     durable: true,
                     autoDelete: false);
 
                 await _channel.QueueDeclareAsync(
-                    queue: "catalog",
+                    queue: "ordem",
                     durable: true,
                     exclusive: false,
                     autoDelete: false,
@@ -73,13 +74,13 @@ namespace WorkerCatalog.Services
 
                 // Fazer bind da queue ao exchange nomeado
                 await _channel.QueueBindAsync(
-                    queue: "catalog",
-                    exchange: "catalog_exchange",
-                    routingKey: "catalog");
+                    queue: "ordem",
+                    exchange: "ordem_exchange",
+                    routingKey: "ordem");
 
                 await _channel.BasicQosAsync(0, 1, false);
 
-                _logger.LogInformation("Fila 'catalog' configurada e aguardando mensagens");
+                _logger.LogInformation("Fila 'ordem' configurada e aguardando mensagens");
 
                 var consumer = new AsyncEventingBasicConsumer(_channel);
 
@@ -109,9 +110,9 @@ namespace WorkerCatalog.Services
 
                         if (!string.IsNullOrEmpty(message))
                         {
-                            await _processarEvento.ProcessarMensagemEvento(message, messageId!, correlationId!);
+                            _processarEvento.ProcessarMensagemEvento(message);
                             await _channel.BasicAckAsync(ea.DeliveryTag, false);
-                            
+
                             _logger.LogInformation("Mensagem processada com sucesso");
                         }
                         else
@@ -129,16 +130,16 @@ namespace WorkerCatalog.Services
                 };
 
                 // IMPORTANTE: autoAck deve ser false para controle manual
-                await _channel.BasicConsumeAsync("catalog", autoAck: false, consumer: consumer);
+                await _channel.BasicConsumeAsync("ordem", autoAck: false, consumer: consumer);
 
-                _logger.LogInformation("Consumer iniciado e aguardando mensagens na fila 'catalog'");
+                _logger.LogInformation("Consumer iniciado e aguardando mensagens na fila 'ordem'");
 
                 // Manter a conexão ativa até ser cancelada
                 while (_connection.IsOpen && !stoppingToken.IsCancellationRequested)
                 {
                     await Task.Delay(50000, stoppingToken);
                 }
-                
+
                 _logger.LogInformation("Conexão RabbitMQ finalizada");
             }
             catch (Exception ex)

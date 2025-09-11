@@ -1,29 +1,26 @@
-﻿using OrderService.Models;
+﻿
 using RabbitMQ.Client;
 using System.Text;
 using System.Text.Json;
 
-namespace OrderService.Services
+namespace WorkerCatalog.Services
 {
-    public class RabbitMqClient : IRabbitMqClient
+    public class RabbitMqReverterOrdem : IRabbitMqReverterOrdem
     {
+        private readonly ILogger<RabbitMqClient> _logger;
         private readonly IConfiguration _config;
-        private readonly ICorrelationLogger _logger;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RabbitMqClient(IConfiguration config, ICorrelationLogger logger, IHttpContextAccessor httpContextAccessor)
+        public RabbitMqReverterOrdem(ILogger<RabbitMqClient> logger, IConfiguration config)
         {
-            _config = config;
             _logger = logger;
-            _httpContextAccessor = httpContextAccessor;
+            _config = config;
         }
 
-        public async Task PublicarAtualizarQuantidadeProdutosAsync(List<Produto> lista, Guid idOrdem)
+        public async Task ReverterOrdemAsync(Guid ordemId, string correlationId)
         {
             try
             {
-                _logger.LogInformation("Iniciando publicação da lista de produtos - evento", lista.Count);
-                var correlationId = _httpContextAccessor.HttpContext?.Items["CorrelationId"]?.ToString();
+                _logger.LogInformation($"Iniciando publicar a reverção da ordem - event {ordemId.ToString()}");
 
                 var factory = new ConnectionFactory
                 {
@@ -37,55 +34,55 @@ namespace OrderService.Services
                 using var channel = await connection.CreateChannelAsync();
 
                 var arguments = new Dictionary<string, object>
-                {             
-                    { "x-dead-letter-exchange", "dead_letters" }, 
-                    { "x-dead-letter-routing-key", "catalog.dlx" },
-                    { "x-max-length", 100 }                        
+                {
+                    { "x-dead-letter-exchange", "dead_letters" },
+                    { "x-dead-letter-routing-key", "ordem.dlx" },
+                    { "x-max-length", 100 }
                 };
 
                 await channel.ExchangeDeclareAsync(
-                    exchange: "catalog_exchange",
+                    exchange: "ordem_exchange",
                     type: ExchangeType.Direct,
                     durable: true,
                     autoDelete: false);
 
                 await channel.QueueDeclareAsync(
-                    queue: "catalog",
+                    queue: "ordem",
                     durable: true,
                     exclusive: false,
                     autoDelete: false,
                     arguments: arguments!);
 
                 await channel.QueueBindAsync(
-                    queue: "catalog",
-                    exchange: "catalog_exchange",
-                    routingKey: "catalog");
+                    queue: "ordem",
+                    exchange: "ordem_exchange",
+                    routingKey: "ordem");
 
-                var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(lista));
+                var body = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(ordemId));
 
                 var props = new BasicProperties
                 {
-                    MessageId = idOrdem.ToString(), 
-                    CorrelationId = correlationId, 
+                    MessageId = ordemId.ToString(),
+                    CorrelationId = correlationId,
                     Headers = new Dictionary<string, object?>
                     {
                         { "x-event-type", "AtualizarQuantidadeProdutos" },
                         { "x-created-at", DateTime.UtcNow.ToString("o") },
-                        { "x-item-count", lista.Count }
+                        { "x-item-count", ordemId.ToString()}
                     },
-                    Persistent = true 
+                    Persistent = true
                 };
 
                 await channel.BasicPublishAsync(
-                    exchange: "catalog_exchange",
-                    routingKey: "catalog",
+                    exchange: "ordem_exchange",
+                    routingKey: "ordem",
                     mandatory: true,
                     basicProperties: props,
                     body: body);
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Erro ao publicar a lista de produtos - event", lista.Count);
+                _logger.LogError(e, "Erro ao publicar a reverção da ordem - event", ordemId.ToString());
                 throw;
             }
         }

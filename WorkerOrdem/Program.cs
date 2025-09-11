@@ -1,28 +1,27 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using WorkerCatalog;
-using WorkerCatalog.Data;
-using WorkerCatalog.Services;
+using WorkerOrdem;
+using WorkerOrdem.Data;
+using WorkerOrdem.Services;
 
 var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddHostedService<Worker>();
 
-
 builder.Services.AddDbContext<ContextDb>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Scoped);
 
-// ConfiguraÃ§Ã£o do banco de dados para logs
+// Configuração do banco de dados para logs
 builder.Services.AddDbContext<LogContextDb>(options =>
     options.UseSqlServer(builder.Configuration["LogConnection"]), ServiceLifetime.Scoped);
 
-// ConfiguraÃ§Ã£o de logging com persistÃªncia no banco de dados
+// Configuração de logging com persistência no banco de dados
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddProvider(new DatabaseLoggerProvider(builder.Services.BuildServiceProvider()));
 
-builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
-builder.Services.AddSingleton<IRabbitMqClient, RabbitMqClient>();
-builder.Services.AddSingleton<IProcessarEvento, ProcessarEvento>();
 builder.Services.AddSingleton<IRabbitMqReverterOrdem, RabbitMqReverterOrdem>();
+builder.Services.AddSingleton<IProcessarEvento, ProcessarEvento>();
+builder.Services.AddScoped<IOrdemRepository, OrdemRepository>();
 
 var host = builder.Build();
 host.Run();

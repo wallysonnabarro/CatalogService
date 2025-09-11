@@ -1,7 +1,9 @@
-﻿namespace WorkerCatalog.Services
+﻿using static MassTransit.Monitoring.Performance.BuiltInCounters;
+
+namespace WorkerCatalog.Services
 {
     public interface IProcessarEvento
     {
-        void ProcessarMensagemEvento(string mensagem);
+        Task ProcessarMensagemEvento(string mensagem, string messageId, string correlationId);
     }
 }

@@ -204,6 +204,28 @@ services:
       <<: *common-variables
     networks:
       - backend
+      
+  workerordem:
+    build:
+      context: .
+      dockerfile: WorkerOrdem/Dockerfile
+    container_name: workerordem
+    depends_on:
+      sql2:
+        condition: service_started
+      sql5:
+        condition: service_started
+      rabbitmq:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      RabbitMQ__Host: "rabbitmq"
+      RabbitMQ__Port: "5672"
+      RabbitMQ__User: "guest"
+      RabbitMQ__Password: "guest"
+      <<: *common-variables
+    networks:
+      - backend
 
   prometheus:
     image: prom/prometheus:latest

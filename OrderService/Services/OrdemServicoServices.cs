@@ -7,11 +7,11 @@ namespace OrderService.Services
     public class OrdemServicoServices(IConfiguration _configuration, IRabbitMqClient _rabbitMqClient, 
         ICorrelationLogger _logger, IHttpClientFactory _httpClientFactory) : IOrdemServicoServices
     {
-        public async Task AtualizarQuantidadeProdutos(List<Produto> lista)
+        public async Task AtualizarQuantidadeProdutos(List<Produto> lista, Guid idOrdem)
         {
             _logger.LogInformation("Iniciando a atualização da {QuantidadeProdutos} produtos - evento", lista.Count);
 
-            await _rabbitMqClient.PublicarAtualizarQuantidadeProdutosAsync(lista);
+            await _rabbitMqClient.PublicarAtualizarQuantidadeProdutosAsync(lista, idOrdem);
         }
 
         public async Task<List<ProdutosListaModels>> ValidarListaProdutos(List<Guid> lista)

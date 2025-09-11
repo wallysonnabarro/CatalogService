@@ -40,7 +40,7 @@ namespace OrderService.Aplicacao
                 var id = await _OrdemRepository.GravarOrdemServiço(novaOrdem);
 
                 // Atualizar a quantidade dos produtos na api CatalogService
-                await _ordemServicoServices.AtualizarQuantidadeProdutos(input);
+                await _ordemServicoServices.AtualizarQuantidadeProdutos(input, id);
 
                 return Result<OrderGeradaModel>.Sucesso(new OrderGeradaModel { Id = id.ToString() });
             }
